@@ -16,8 +16,8 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
 
     int camMinX;
     int camMaxX;
-    int camMinZ;
-    int camMaxZ;
+    int camMinY;
+    int camMaxY;
 
     void Start()
     {
@@ -33,8 +33,8 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
 
             camMinX = (int)(surface.transform.position.x - surface.transform.localScale.x / 2);
             camMaxX = (int)(surface.transform.position.x + surface.transform.localScale.x / 2);
-            camMinZ = (int)(surface.transform.position.x - surface.transform.localScale.z / 2);
-            camMaxZ = (int)(surface.transform.position.x + surface.transform.localScale.z / 2);
+            camMinY = (int)(surface.transform.position.y - surface.transform.localScale.y / 2);
+            camMaxY = (int)(surface.transform.position.y + surface.transform.localScale.y / 2);
         }
         else
         {
@@ -59,7 +59,7 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
     {
         if (surf != null)
         {
-            this.transform.position = surf.transform.position + new Vector3(0, canFlyHeight, 0);
+            this.transform.position = surf.transform.position + new Vector3(0, 0, -1 * canFlyHeight);
             this.transform.LookAt(surf.transform);
         }
         else
@@ -88,14 +88,14 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
 
         if (Input.mousePosition.y > height - boundary)
         {
-            if (transform.position.z < camMaxZ)
-                transform.position += new Vector3(0.0f, 0.0f, Time.deltaTime * speed);
+            if (transform.position.y < camMaxY)
+                transform.position += new Vector3(0.0f, Time.deltaTime * speed , 0.0f);
         }
 
         if (Input.mousePosition.y < 0 + boundary)
         {
-            if (transform.position.z > camMinZ)
-                transform.position -= new Vector3(0.0f, 0.0f, Time.deltaTime * speed);
+            if (transform.position.y > camMinY)
+                transform.position -= new Vector3(0.0f, Time.deltaTime * speed, 0.0f);
         }
     }
 }
