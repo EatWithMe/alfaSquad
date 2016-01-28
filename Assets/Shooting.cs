@@ -102,7 +102,6 @@ public class Shooting : MonoBehaviour {
 
     void FillClipWithAmmo()
     {
-        Debug.Log("Fill");
         currentAmmoAtClip = clipSize;
         reloadStarted = false;
     }
@@ -124,7 +123,7 @@ public class Shooting : MonoBehaviour {
 
     void PlaySound(AudioClip sound)
     {
-        audio.PlayOneShot(sound,Random.RandomRange(0.5f, 1f) ) ;
+        audio.PlayOneShot(sound,Random.Range(0.5f, 1f) ) ;
     }
 
 
@@ -137,7 +136,7 @@ public class Shooting : MonoBehaviour {
 
     void SomeEffect()
     {
-        Instantiate(bulletPrefab, FirePoint.position, transform.rotation);
+        Instantiate(bulletPrefab, FirePoint.position, FirePoint.rotation);
     }
 
 }
