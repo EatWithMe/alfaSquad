@@ -8,7 +8,7 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
     public float speed = 20.0f; //cam speed
     public GameObject surface; // for map limits
 
-    int canFlyHeight = 9;
+    public int canFlyHeight = 9;
     int boundary = 1;
 
     int width;
@@ -59,7 +59,7 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
     {
         if (surf != null)
         {
-            this.transform.position = surf.transform.position + new Vector3(0, 0, -1 * canFlyHeight);
+            this.transform.position = surf.transform.position + new Vector3(0, 0, canFlyHeight);
             this.transform.LookAt(surf.transform);
         }
         else
