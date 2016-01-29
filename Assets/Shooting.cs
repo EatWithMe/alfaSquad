@@ -13,11 +13,11 @@ public class Shooting : MonoBehaviour {
     public float shotsDelay = 1f;
     private float reloadTimeSeconds = 3f; //  ReloadSound.length
 
-    //conesize at 10x distance
-    public float accuracyMin = 1f;
-    public float accuracyMax = 2f;
-    public float accuracyPenaltyPerShot = 0.3f;
-    public float accuracyDropPerSecond = 0.3f;
+    //degrees spray semi circle
+    public float accuracyMin = 6f;
+    public float accuracyMax = 20f;
+    public float accuracyPenaltyPerShot = 4f;
+    public float accuracyDropPerSecond = 2f;
 
     private float currentAccuracy;
     private int currentAmmoAtClip;
@@ -62,8 +62,10 @@ public class Shooting : MonoBehaviour {
                 TryToShoot();
             }
         }
-	
-	}
+
+        DecreaseAccuracy();
+
+    }
 
     void TryToShoot()
     {
@@ -132,12 +134,37 @@ public class Shooting : MonoBehaviour {
         shootDelayEndTime = Time.time + shotsDelay;
         SomeEffect();
         PlaySound(ShootSound);
+        IncreaseAccuracy();
     }
 
     void SomeEffect()
     {
-        Instantiate(bulletPrefab, FirePoint.position, FirePoint.rotation);
+        Instantiate(bulletPrefab, FirePoint.position, BulletRandomAccuracy (FirePoint.rotation ) );
     }
 
+    Quaternion BulletRandomAccuracy(Quaternion gunDirection)
+    {
+
+        Quaternion res = Quaternion.Euler(0 , Random.RandomRange(-1 * currentAccuracy, currentAccuracy), Random.RandomRange(0, - 1 * currentAccuracy)); ;
+        res = res * gunDirection;
+        return res; 
+    }
+
+    void IncreaseAccuracy()
+    {
+        currentAccuracy += accuracyPenaltyPerShot;
+        if (currentAccuracy > accuracyMax) currentAccuracy = accuracyMax;
+    }
+
+    void DecreaseAccuracy()
+    {
+
+        if (currentAccuracy > accuracyMin)
+        {
+            currentAccuracy -= (accuracyDropPerSecond * Time.deltaTime);
+            if (currentAccuracy < accuracyMin) currentAccuracy = accuracyMin;
+        }
+    }
+        
 }
 

@@ -36,10 +36,10 @@ public class UnitLookAtMouse : MonoBehaviour {
         Vector3 diff = RotateToTarget - transform.position;
         diff.Normalize();
 
-        float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+        float rot_z = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg;
 
 
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0f, 0f, rot_z - 90), rotationSpeedMax * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0f, rot_z , 0f), rotationSpeedMax * Time.deltaTime);
 
     }
 }
