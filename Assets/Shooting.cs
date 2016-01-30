@@ -145,7 +145,7 @@ public class Shooting : MonoBehaviour {
     Quaternion BulletRandomAccuracy(Quaternion gunDirection)
     {
 
-        Quaternion res = Quaternion.Euler(0 , Random.RandomRange(-1 * currentAccuracy, currentAccuracy), Random.RandomRange(0, - 1 * currentAccuracy)); ;
+        Quaternion res = Quaternion.Euler(0 , Random.Range(-1 * currentAccuracy, currentAccuracy), Random.Range(currentAccuracy , - 1 * currentAccuracy)); ;
         res = res * gunDirection;
         return res; 
     }
