@@ -1,44 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class MoveToMouseClick : MonoBehaviour {
 
-	
+
+    public Transform target;
+    private NavMeshAgent agent;
+
+    void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+    }
+
+
 	// Update is called once per frame
 	void Update ()
     {
 	    if (Input.GetMouseButtonDown(1) )
         {
-            Vector3 clickLocation;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            Vector3 hitPos;
+            if (GetMouseHitPosition(out hitPos))
             {
-
-                //Debug.Log("you miss a surface with right click");
-                if (hit.transform.tag == "Surface")
-                {
-                    clickLocation = hit.point;
-                    AddMovingForce(clickLocation);
-                }
-                else
-                {
-                    Debug.Log("you miss a surface with right click");
-                }
+                //target = tmpTarget;
+                agent.SetDestination(hitPos);
                 
             }
-            else
-            {
-                return;
-            }
+        }
+        else
+        {
+            return;
         }
 	}
 
-    void AddMovingForce(Vector3 wantedPos)
+    float GetPathLenght()
     {
-        Vector3 relativePos = wantedPos - transform.position;
+        return -1;
+    }
 
-        // Move your game object using a rigid body force to get it moving in the right direction. 
-        this.GetComponent<Rigidbody2D>().AddForce(relativePos.normalized * 40f);
+
+    bool GetMouseHitPosition(out Vector3 hitPos)
+    {
+        bool res = false;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            hitPos = hit.point;
+            res = true;
+        }
+        else
+        {
+            hitPos = new Vector3(0, 0, 0);
+            //res = false;
+        }
+
+        return res;
     }
 }

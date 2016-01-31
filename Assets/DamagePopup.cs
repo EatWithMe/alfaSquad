@@ -4,14 +4,14 @@ using System.Collections;
 public class DamagePopup : MonoBehaviour {
 
 
-    public Color color =  Color(0.8,0.8,0,1.0);
-    public float scroll = 0.05;  // scrolling velocity
-    public float duration = 1.5; // time to die
+    public Color color =  new Color( 0.8f ,0.8f ,0f ,1.0f );
+    public float scroll = 0.05f;  // scrolling velocity
+    public float duration = 1.5f; // time to die
     public float alpha;
  
     void Start()
     {
-        guiText.material.color = color; // set text color
+        GetComponent<GUIText>().material.color = color; // set text color
         alpha = 1;
     }
 
@@ -19,9 +19,13 @@ public class DamagePopup : MonoBehaviour {
     {
         if (alpha > 0)
         {
-            transform.position.y += scroll * Time.deltaTime;
+            Vector3 tV3 = transform.position;
+            tV3.y += scroll * Time.deltaTime;
+            transform.position = tV3;
             alpha -= Time.deltaTime / duration;
-            guiText.material.color.a = alpha;
+            //GUIText tmpText = GetComponent<GUIText>();
+            Color colr = GetComponent<GUIText>().material.color;
+            colr.a = alpha;
         }
         else {
             Destroy(gameObject); // text vanished - destroy itself
