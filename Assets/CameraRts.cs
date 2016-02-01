@@ -7,10 +7,14 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
 
     public float speed = 20.0f; //cam speed
     public GameObject surface; // for map limits
+    public GameObject middlePoint; //camera will not go fether then x
+    public int maxDistance = 100;
+
 
     public int canFlyHeight = 9;
-    int boundary = 1;
 
+    int boundary = 1;
+    
     int width;
     int height;
 
@@ -72,6 +76,7 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
 
     void MoveCamera()
     {
+
         if (Input.mousePosition.x > width - boundary)
         {
             if (transform.position.x < camMaxX)
@@ -79,8 +84,7 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
                 transform.position += new Vector3(Time.deltaTime * speed, 0.0f, 0.0f);
             }
         }
-
-        if (Input.mousePosition.x < 0 + boundary)
+        else if (Input.mousePosition.x < 0 + boundary)
         {
             if (transform.position.x > camMinX)
                 transform.position -= new Vector3(Time.deltaTime * speed, 0.0f, 0.0f);
@@ -91,12 +95,37 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
             if (transform.position.z < camMaxZ)
                 transform.position += new Vector3(0.0f, 0.0f, Time.deltaTime * speed);
         }
-
-        if (Input.mousePosition.y < 0 + boundary)
+        else if (Input.mousePosition.y < 0 + boundary)
         {
             if (transform.position.z > camMinZ)
                 transform.position -= new Vector3(0.0f, 0.0f, Time.deltaTime * speed);
         }
+
+        
+        float distanceFromMidUnit = 0f;
+        if (middlePoint)
+        {
+            //distanceFromMidUnit = Vector3.Distance(this.transform.position, middlePoint.transform.position);
+            //if (distanceFromMidUnit > maxDistance)
+            {
+                Vector2 mid = new Vector2(middlePoint.transform.position.x, middlePoint.transform.position.z);
+                Vector2 ths = new Vector2(this.transform.position.x, this.transform.position.z);
+
+                distanceFromMidUnit = Vector2.Distance(mid, ths);
+                if (distanceFromMidUnit > maxDistance)
+                {
+                    Vector2 diff = Vector2.ClampMagnitude(ths - mid, maxDistance);
+                    //Debug.Log("vector = " + diff);
+
+                    Vector3 corr = new Vector3(diff.x, 0f, diff.y);
+                    Vector3 newPOs = middlePoint.transform.position + corr;
+
+                    transform.position = new Vector3(newPOs.x, this.transform.position.y, newPOs.z);
+                }
+            }
+        }
+        
     }
+
 }
 
