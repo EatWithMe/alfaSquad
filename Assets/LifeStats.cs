@@ -4,12 +4,14 @@ using System.Collections;
 public class LifeStats : MonoBehaviour
 {
 
-    public int      healthMax = 100;
+
+    private int _healthMax = 100;
+
     [SerializeField]
-    private float   healthCurrent = 100;
+    private float   _healthCurrent = 100;
     public float    healthRegenPerSec = 0.1f;
 
-
+    
 
     //public delegate void OnDeathAction(GameObject enemy);
 
@@ -18,6 +20,39 @@ public class LifeStats : MonoBehaviour
 
     public delegate void OnDamageAction(float amount);
     public OnDamageAction OnDamage;
+
+    // if some stats or hp is changed
+    public delegate void OnStatsChanged();
+    public OnStatsChanged OnStats;
+
+
+    public int healthMax
+    {
+        get { return _healthMax; }
+        set
+        {
+            _healthMax = value;
+            riseOnStatsEvent();
+        }
+    }
+
+    private float previousOnStatHealth = 0f;
+
+    public float healthCurrent
+    {
+        get  { return _healthCurrent; }
+        set
+        {
+            _healthCurrent = value;
+            if ( Mathf.Abs (_healthCurrent - previousOnStatHealth)  > 0.9)
+            {
+                previousOnStatHealth = _healthCurrent;
+                riseOnStatsEvent(); //we will send event only of 0.9% of hp update
+            }
+        }
+    }
+
+
 
     // Use this for initialization
     void Start()
@@ -54,12 +89,9 @@ public class LifeStats : MonoBehaviour
         if (healthCurrent > healthMax) healthCurrent = healthMax;
     }
 
-    void damageReport (float amount)
+    void riseOnDamagEvent (float amount)
     {
-        if (OnDamage!= null)
-        {
-            OnDamage(amount);
-        }
+        if (OnDamage!= null) OnDamage(amount);
     }
 
 
@@ -74,5 +106,10 @@ public class LifeStats : MonoBehaviour
                 OnDeath();
             }
         }
+    }
+
+    void riseOnStatsEvent()
+    {
+        if (OnStats != null) OnStats();
     }
 }

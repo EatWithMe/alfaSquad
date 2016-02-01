@@ -6,9 +6,12 @@ public class WeaponTemplate : MonoBehaviour
     
 
     public GameObject bulletPrefab;
+    public Transform FirePoint;
 
     public AudioClip ShootSound;
     public AudioClip ReloadSound;
+    
+    
 
     //weapon stats
     public int clipSize = 5;
@@ -21,6 +24,10 @@ public class WeaponTemplate : MonoBehaviour
     public float accuracyPenaltyPerShot = 4f;
     public float accuracyDropPerSecond = 2f;
 
+    public float optimalDistance = 100f;
+
+
+    
     private float currentAccuracy;
     private int currentAmmoAtClip;
 
@@ -28,7 +35,7 @@ public class WeaponTemplate : MonoBehaviour
     private float reloadEndTime = 0f;
     private bool reloadStarted; // flag indicates that reload was started
 
-    public Transform FirePoint;
+    
     private AudioSource audio;
 
     void Start()
@@ -41,6 +48,7 @@ public class WeaponTemplate : MonoBehaviour
         FirePoint = transform.Find("bulletStartPosition");
         audio = GetComponent<AudioSource>();
 
+        CalculateOptimalDistance();
 
     }
 
@@ -170,6 +178,33 @@ public class WeaponTemplate : MonoBehaviour
             currentAccuracy -= (accuracyDropPerSecond * Time.deltaTime);
             if (currentAccuracy < accuracyMin) currentAccuracy = accuracyMin;
         }
+    }
+
+    /// <summary>
+    /// find distance where we have some chance to hit target with minimal accuracy
+    /// </summary>
+    void CalculateOptimalDistance()
+    {
+        float MAX_ALLOUWED_DISTANCE = 100f;
+        float MIN_ALLOUWED_DISTANCE  = 100f;
+        float MINIMAL_CHANSE_TO_HIT = 0.05f;
+
+        // that is body hit surface - taken from collision
+        float bodySquare = 1f * 0.1f   + 0.2f * 0.05f ;
+        float R = Mathf.Sqrt(bodySquare / (MINIMAL_CHANSE_TO_HIT * 3.14f));
+        float X = R / Mathf.Tan(  ( 3.14f * accuracyMin) / 180f  );
+
+        if ((X > MIN_ALLOUWED_DISTANCE) && (X < MAX_ALLOUWED_DISTANCE))
+        {
+            optimalDistance = X;
+        }
+        else
+        {
+            optimalDistance = ( MAX_ALLOUWED_DISTANCE + MIN_ALLOUWED_DISTANCE ) / 2;
+        }
+        
+
+
     }
 
 }
