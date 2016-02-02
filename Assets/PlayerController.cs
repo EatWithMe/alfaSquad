@@ -4,14 +4,23 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
     public GameObject[] unitList;
-    //public GameObject selectedUnit;
+    
     UnitsPrefubList unitPrefabs;
+    public int selectedUnit = -1;
+
+    //event for new unit seelction
+    public delegate void OnSelectionAction(GameObject selected);
+    public OnSelectionAction OnSelection;
+
+    
+
 
     // Use this for initialization
     void Start () {
 
         initUnitPrefabList();
-
+        AddNewUnitToSquad();
+        SelectAnyUnit();
 
 
     }
@@ -21,13 +30,51 @@ public class PlayerController : MonoBehaviour {
 
 
         SquadCommandToMove();
+        testPart();
+
+    }
+
+
+    void testPart()
+    {
+        SpawnOnKeySpace();
+        SwitchUnitOnKeyTab();
+    }
+
+    void SpawnOnKeySpace()
+    {
         if (Input.GetKeyDown("space"))
         {
             AddNewUnitToSquad();
         }
-
-
     }
+
+    void SwitchUnitOnKeyTab()
+    {
+        if (Input.GetKeyDown("tab"))
+        {
+            SwitchSelectedUnit();
+        }
+    }
+
+    void SwitchSelectedUnit()
+    {
+        int newIndex = selectedUnit;
+        if (newIndex < 0) newIndex = 0;
+
+        for ( int i = 1; i < ( unitList.Length ); i++)
+        {
+            newIndex ++;
+            if (newIndex >= unitList.Length) newIndex -= unitList.Length;
+            if (unitList[newIndex] != null)
+            {
+                selectUnit(newIndex);
+                break;
+                //we can return here
+            }
+        }
+    }
+
 
 
     void initUnitPrefabList()
@@ -59,19 +106,137 @@ public class PlayerController : MonoBehaviour {
     {
         if ( unitList.Length > 0 )
         {
-            foreach (GameObject unit in unitList)
+
+            GameObject selUnitl = getSelectedUnit();
+
+            if (selUnitl != null)
             {
-                if (unit != null)
+
+                int formationIndex = 0;
+                int listIndex = selectedUnit;
+                for ( int i = 0 ; i < unitList.Length; i++)
                 {
-                    UnitMoovement movement;
-                    movement = unit.GetComponent<UnitMoovement>();
-                    if (movement != null)
+                    
+
+
+                    Vector3 moveTo = new Vector3(0,0,0);
+
+                    GameObject unit = unitList[listIndex];
+
+                    if (unit != null)
                     {
-                        movement.SetTarget(hitPos);
+                        UnitMoovement movement;
+                        movement = unit.GetComponent<UnitMoovement>();
+
+                        if (movement != null)
+                        {
+                            if (foundNewFormatedPosition(formationIndex, selUnitl.transform.position, hitPos, out moveTo))
+                            {
+                                movement.SetTarget(moveTo);
+                            }
+                            else
+                            {
+                                movement.SetTarget(hitPos);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogError("Cannot find movement at units");
+                        }
+
+                        formationIndex++;
+                    }
+
+                    listIndex++;
+                    if (listIndex >= unitList.Length) listIndex -= unitList.Length;
+                }
+
+                /*
+                foreach (GameObject unit in unitList)
+                {
+                    if (unit != null)
+                    {
+                        UnitMoovement movement;
+                        movement = unit.GetComponent<UnitMoovement>();
+                        if (movement != null)
+                        {
+                            movement.SetTarget(hitPos);
+                        }
                     }
                 }
+                */
+
             }
         }
+    }
+
+
+    /// <summary>
+    /// true - if no point found
+    /// </summary>
+    /// <param name="formationIndex"></param>
+    /// <param name="unitPos"></param>
+    /// <param name="hitPos"></param>
+    /// <param name="moveTo"></param>
+    /// <returns></returns>
+    bool foundNewFormatedPosition(int formationIndex, Vector3 unitPos, Vector3 hitPos, out Vector3 moveTo)
+    {
+        bool res = false;
+
+        if ( formationIndex == 0)
+        {
+            res = true;
+            moveTo = hitPos;
+        }
+        else
+        {
+
+            moveTo =  calculateNewPositionInFormation(formationIndex, unitPos, hitPos);
+            res = true;
+            /*
+            NavMeshHit navMeshHit;
+            if ( NavMesh.SamplePosition(hitPos , out navMeshHit , 5 , NavMesh.GetNavMeshLayerFromName("Walkable") ) )
+            {
+                
+                moveTo = navMeshHit.position;
+                res = true;
+            }
+            else
+            {
+                moveTo = hitPos;
+                res = false;
+            }
+            */
+        }
+
+        return res;
+    }
+
+
+    /// <summary>
+    /// perpendicular line formation
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="fromPos"></param>
+    /// <param name="toPos"></param>
+    /// <returns></returns>
+    Vector3 calculateNewPositionInFormation(int index, Vector3 fromPos, Vector3 toPos)
+    {
+
+        const int DISTANSE_BETWEEN_UNITS = 2;
+        Vector3  v = toPos - fromPos;
+
+        Vector3 perpendic =  Vector3.Cross(v,Vector3.up);
+        perpendic.Normalize();
+
+        int koeff = index % 2;
+        if (koeff == 0) koeff = -1;
+
+        float c = (( index + 1) / 2) + 0.1f;
+        int lenght = Mathf.RoundToInt (c)   * DISTANSE_BETWEEN_UNITS;
+        
+        Vector3 res = toPos + perpendic * koeff * lenght;
+        return res;
     }
 
 
@@ -104,5 +269,47 @@ public class PlayerController : MonoBehaviour {
     {
         return Instantiate(unitPrefabs.unitPrefubs[0], this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
     }
+
+    void SelectAnyUnit()
+    {
+        int i = 0;
+        foreach (GameObject unitSlot in unitList)
+        {
+            if (unitSlot != null)
+            {
+
+                selectUnit( i);
+                break;
+            }
+            i++;
+        }
+    }
+
+
+    void selectUnit(int i)
+    {
+        if ( ( i < unitList.Length) && (i >=0 ) )
+        {
+            if (unitList[i] !=null)
+            {
+                selectedUnit = i;
+                if (OnSelection !=null) OnSelection( unitList[i] );
+            }
+        }
+    }
+
+
+    GameObject getSelectedUnit()
+    {
+            if ( selectedUnit>=0 )
+            {
+                return unitList[selectedUnit];
+            }
+            else
+            {
+                return null;
+            }
+    }
+
 
 }

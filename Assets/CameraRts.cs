@@ -7,7 +7,8 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
 
     public float speed = 20.0f; //cam speed
     public GameObject surface; // for map limits
-    public GameObject middlePoint; //camera will not go fether then x
+    public GameObject selectedUnit; //camera will not go fether then x
+    private PlayerController playerCtrl;
     public int maxDistance = 100;
 
 
@@ -24,6 +25,53 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
     int camMaxZ;
 
     void Start()
+    {
+
+        initCamera();
+        initMidPoint();
+
+
+        
+
+        //    Mathf.Clamp(-100, 100);
+    }
+
+    void Update()
+    {
+        //if (isLocalPlayer)
+        {
+            MoveCamera();
+        }
+    }
+
+    void initMidPoint()
+    {
+        GameObject plr = GameObject.FindGameObjectWithTag("Player") as GameObject;
+        if ( plr != null )
+        {
+            playerCtrl = plr.GetComponent<PlayerController>();
+            if ( playerCtrl != null)
+            {
+                subscribeToUnitChangeEvent(); 
+            }
+        }
+        
+    }
+
+    void subscribeToUnitChangeEvent()
+    {
+        if ( playerCtrl != null)
+        {
+            playerCtrl.OnSelection += onUnitChange;
+        }
+    }
+
+    public void onUnitChange(GameObject selected)
+    {
+        selectedUnit = selected;
+    }
+
+    void initCamera()
     {
         width = Screen.width;
         height = Screen.height;
@@ -44,16 +92,8 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
         {
             Debug.Log("Cannot find game surface");
         }
-        //    Mathf.Clamp(-100, 100);
     }
 
-    void Update()
-    {
-        //if (isLocalPlayer)
-        {
-            MoveCamera();
-        }
-    }
 
     /// <summary>
     /// We need to put camera for looking at surface
@@ -103,12 +143,12 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
 
         
         float distanceFromMidUnit = 0f;
-        if (middlePoint)
+        if (selectedUnit)
         {
             //distanceFromMidUnit = Vector3.Distance(this.transform.position, middlePoint.transform.position);
             //if (distanceFromMidUnit > maxDistance)
             {
-                Vector2 mid = new Vector2(middlePoint.transform.position.x, middlePoint.transform.position.z);
+                Vector2 mid = new Vector2(selectedUnit.transform.position.x, selectedUnit.transform.position.z);
                 Vector2 ths = new Vector2(this.transform.position.x, this.transform.position.z);
 
                 distanceFromMidUnit = Vector2.Distance(mid, ths);
@@ -118,7 +158,7 @@ public class CameraRts : MonoBehaviour//NetworkBehaviour
                     //Debug.Log("vector = " + diff);
 
                     Vector3 corr = new Vector3(diff.x, 0f, diff.y);
-                    Vector3 newPOs = middlePoint.transform.position + corr;
+                    Vector3 newPOs = selectedUnit.transform.position + corr;
 
                     transform.position = new Vector3(newPOs.x, this.transform.position.y, newPOs.z);
                 }
