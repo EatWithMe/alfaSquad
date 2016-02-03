@@ -12,6 +12,8 @@ public class UnitAiTargeting : MonoBehaviour {
 
     private UnitOwner owner;
 
+    private bool weaponTriggerState = false;
+
     // Use this for initialization
     void Start ()
     {
@@ -38,15 +40,17 @@ public class UnitAiTargeting : MonoBehaviour {
         {
             if (turnTowardsPoint(target.transform.position))
             {
-                //SendWeCanShoot(true);
+                PushTheWeaponTrigger(true);
             }
             else
             {
-                //SendWeCanShoot(false);
+                PushTheWeaponTrigger(false);
             }
         }
         else
         {
+            PushTheWeaponTrigger(false);
+
             //we can  search targets only 1 per time interwal
             if (Time.time > targetSearchAllowedFromTime  )
             {
@@ -56,6 +60,17 @@ public class UnitAiTargeting : MonoBehaviour {
             }
         }
     }
+
+    void PushTheWeaponTrigger(bool val)
+    {
+        if (! ( weaponTriggerState == val) )
+        {
+            weaponTriggerState = val;
+            //SendMessage("WeaponTriggerSetToFire", true);
+            BroadcastMessage("WeaponTriggerSetToFire", val);
+        }
+    }
+    
 
     void findNewTarget()
     {

@@ -32,12 +32,10 @@ public class UnitOwner : MonoBehaviour {
 
         if (owner != null)
         {
-            Debug.Log("ovnerasdad222");
             parent = owner;
             this.playerName = owner.playerName;
             this.playerIndex = owner.playerIndex;
             this.teamIndex = owner.teamIndex;
-
         }
     }
 

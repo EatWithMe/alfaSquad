@@ -35,6 +35,7 @@ public class WeaponTemplate : MonoBehaviour
     private float reloadEndTime = 0f;
     private bool reloadStarted; // flag indicates that reload was started
 
+    private bool triggerIsPressed = false;
     
     private AudioSource audio;
 
@@ -56,7 +57,8 @@ public class WeaponTemplate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        //if (Input.GetMouseButton(0))
+        if ( triggerIsPressed ) 
         {
             if (IsReloading())
             {
@@ -75,6 +77,11 @@ public class WeaponTemplate : MonoBehaviour
 
         DecreaseAccuracy();
 
+    }
+
+    void WeaponTriggerSetToFire(bool val)
+    {
+        triggerIsPressed = val;
     }
 
     void TryToShoot()
