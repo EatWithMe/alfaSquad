@@ -7,27 +7,79 @@ public class BulletMovement : MonoBehaviour {
     public int lifeTimeSec = 5;
     public int bulletDamage = 30;
 
-	// Update is called once per frame
-	void Update () {
-        transform.Translate(Vector3.up * Time.deltaTime * moveSpeed);
-        Destroy(gameObject, lifeTimeSec);
-	}
-
-
-    void OnCollisionEnter(Collision col)
+    void Start()
     {
-        Debug.Log("coll name = " + col.gameObject.name);
-       Destroy(this.gameObject);
+        Destroy(gameObject, lifeTimeSec);
     }
 
-    void OnTriggerEnter(Collider other)
+	// Update is called once per frame
+	void Update ()
     {
-        //GetComponent<Collider>().name
-        //Debug.Log("OnTriggerEnter coll name = " + other.name );
+        //MoveBulletForward();
+    }
+
+    void FixedUpdate()
+    {
+        CheckRayCastCollision();
+        MoveBulletForwardFixedUpdate();
         
+    }
+
+    void MoveBulletForward()
+    {
+        transform.Translate(Vector3.up * Time.deltaTime * moveSpeed);
+    }
+
+    void MoveBulletForwardFixedUpdate()
+    {
+        transform.Translate(Vector3.up * Time.fixedDeltaTime * moveSpeed);
+    }
+
+    void CheckRayCastCollision()
+    {
+        RaycastHit hit;
+        float nextMoveDistance = moveSpeed * Time.fixedDeltaTime;
+
+        if (Physics.Raycast(transform.position, transform.up , out hit, nextMoveDistance))
+        {
+            if (hit.transform)
+            {
+                DoDamageToHitObject(hit.collider);
+                DestroyBullet();
+                return;
+            }
+        }
+    }
+
+    void DestroyBullet()
+    {
+        Destroy(this.gameObject);
+    }
+
+
+    /*
+        void OnCollisionEnter(Collision col)
+        {
+           Destroy(this.gameObject);
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            //GetComponent<Collider>().name
+            //Debug.Log("OnTriggerEnter coll name = " + other.name );
+
+
+        }
+
+        */
+
+
+    void DoDamageToHitObject(Collider other)
+    {
+        Debug.Log("we hit  = " + other.name);
 
         //if we hit something and this compounent have lifes 
-        LifeStats victim =   other.gameObject.GetComponent<LifeStats>();
+        LifeStats victim = other.gameObject.GetComponent<LifeStats>();
         if (victim != null)
         {
             //Debug.Log("ifestats is FOUND!!!");
@@ -38,7 +90,8 @@ public class BulletMovement : MonoBehaviour {
             //Debug.Log("Cannot fine lifestats");
         }
 
-        Destroy(this.gameObject);
+        DestroyBullet();
+
     }
 
 }
