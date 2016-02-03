@@ -29,10 +29,12 @@ public class UnitOwner : MonoBehaviour {
 
     public void setOwnerShip( UnitOwner owner)
     {
+
         if (owner != null)
         {
+            Debug.Log("ovnerasdad222");
             parent = owner;
-            this.playerName = owner.name;
+            this.playerName = owner.playerName;
             this.playerIndex = owner.playerIndex;
             this.teamIndex = owner.teamIndex;
 

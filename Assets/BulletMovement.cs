@@ -76,7 +76,7 @@ public class BulletMovement : MonoBehaviour {
 
     void DoDamageToHitObject(Collider other)
     {
-        Debug.Log("we hit  = " + other.name);
+        //Debug.Log("we hit  = " + other.name);
 
         //if we hit something and this compounent have lifes 
         LifeStats victim = other.gameObject.GetComponent<LifeStats>();

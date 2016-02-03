@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(UnitOwner))]
 public class PlayerController : MonoBehaviour {
 
     public GameObject[] unitList;
@@ -267,7 +268,10 @@ public class PlayerController : MonoBehaviour {
 
     GameObject CreateNewUnit()
     {
-        return Instantiate(unitPrefabs.unitPrefubs[0], this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
+        GameObject res = Instantiate(unitPrefabs.unitPrefubs[0], this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
+        res.SendMessage("SetSquadControler", this.gameObject);
+        res.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
+        return res;
     }
 
     void SelectAnyUnit()
@@ -311,5 +315,35 @@ public class PlayerController : MonoBehaviour {
             }
     }
 
+    /// <summary>
+    /// Message Handler - to remove dead units from the list
+    /// </summary>
+    /// <param name="obj"></param>
+    public void UnitIsDead(GameObject obj)
+    {
+        Debug.Log("UnitIsDead");
+
+        if ( obj!=null )
+        {
+            for (int i = 0; i < unitList.Length; i++)
+            {
+                if (unitList[i] == obj)
+                {
+                    unitList[i] = null;
+                    ReportUnitIsDead(i);
+                    return;
+                }
+            }
+        }
+    }
+
+    //todo unitRemoved from squad
+    void ReportUnitIsDead(int i)
+    {
+        if ( i== selectedUnit)
+        {
+            SelectAnyUnit();
+        }
+    }
 
 }

@@ -7,6 +7,7 @@ public class DamageTaker : MonoBehaviour  {
 
     private LifeStats stats;
     public GameObject damageTextPrefub;
+    private GameObject squadControler;
 
 	// Use this for initialization
 	void Start ()
@@ -19,8 +20,20 @@ public class DamageTaker : MonoBehaviour  {
     public void OnMyDeath()
     {
         //todo add death animation
+        ReportToSquadAboutMyDeath();
         Destroy(this.gameObject );
     }
+
+    void ReportToSquadAboutMyDeath()
+    {
+        Debug.Log("UnitIsdeadaxdas");
+        if (squadControler != null)
+        {
+            Debug.Log("UnitIsdeadaxda22222222222s");
+            squadControler.SendMessage("UnitIsDead", this.gameObject);
+        }
+    }
+        
 
 
     public void OnMyDamage(float amount)
@@ -31,7 +44,10 @@ public class DamageTaker : MonoBehaviour  {
         }
     }
 
-
+    public void SetSquadControler(GameObject squad)
+    {
+        squadControler = squad;
+    }
 
     // it will alwais trigger because of ground collision - so we dont wee to use it
     //void OnCollisionEnter(Collision col)

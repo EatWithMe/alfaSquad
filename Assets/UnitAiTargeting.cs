@@ -81,8 +81,6 @@ public class UnitAiTargeting : MonoBehaviour {
 
                     if (! UnitOwner.isFriendly(owner, colOwner) ) //we need to check eney or not
                     {
-                        Debug.Log("searcing");
-
                         if (closestTarget == null)
                         {
                             closestTarget = col.gameObject;
