@@ -26,10 +26,8 @@ public class DamageTaker : MonoBehaviour  {
 
     void ReportToSquadAboutMyDeath()
     {
-        Debug.Log("UnitIsdeadaxdas");
         if (squadControler != null)
         {
-            Debug.Log("UnitIsdeadaxda22222222222s");
             squadControler.SendMessage("UnitIsDead", this.gameObject);
         }
     }
