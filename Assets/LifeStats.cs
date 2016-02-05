@@ -79,7 +79,7 @@ public class LifeStats : MonoBehaviour
     public void takeDamage(float amount)
     {
         healthCurrent -= amount;
-
+        riseOnDamagEvent(amount);
         deathReport();
     }
 

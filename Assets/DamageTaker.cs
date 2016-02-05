@@ -14,6 +14,7 @@ public class DamageTaker : MonoBehaviour  {
     {
         stats = GetComponent<LifeStats>();
         stats.OnDeath += OnMyDeath;
+        stats.OnDamage += OnMyDamage;
 
     }
 
@@ -38,7 +39,18 @@ public class DamageTaker : MonoBehaviour  {
     {
         if ( damageTextPrefub != null)
         {
-            Instantiate(damageTextPrefub, this.transform.position, this.transform.rotation);
+
+
+            Quaternion rot = Quaternion.Euler(90,0,0);
+            GameObject pop;
+            //pop = Instantiate(damageTextPrefub, this.transform.position,  this.transform.rotation) as GameObject;
+            pop = Instantiate(damageTextPrefub, this.transform.position, rot) as GameObject;
+            FloatingText flText;
+            flText = pop.GetComponent<FloatingText>();
+            if (flText != null)
+            {
+                flText.SetFloatingText(amount.ToString("#."), Color.red);
+            }
         }
     }
 
