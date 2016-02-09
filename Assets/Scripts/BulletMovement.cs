@@ -83,7 +83,7 @@ public class BulletMovement : MonoBehaviour {
         if (victim != null)
         {
             //Debug.Log("ifestats is FOUND!!!");
-            victim.takeDamage(bulletDamage);
+            victim.CmdTakeDamage(bulletDamage);
         }
         else
         {

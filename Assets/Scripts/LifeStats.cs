@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class LifeStats : MonoBehaviour
+public class LifeStats : NetworkBehaviour
 {
 
-
+    [SyncVar]
     private int _healthMax = 100;
 
     [SerializeField]
+    [SyncVar]
     private float   _healthCurrent = 100;
+    [SyncVar]
     public float    healthRegenPerSec = 0.1f;
 
     
@@ -32,7 +35,7 @@ public class LifeStats : MonoBehaviour
         set
         {
             _healthMax = value;
-            riseOnStatsEvent();
+            RpcRiseOnStatsEvent();
         }
     }
 
@@ -47,7 +50,7 @@ public class LifeStats : MonoBehaviour
             if ( Mathf.Abs (_healthCurrent - previousOnStatHealth)  > 0.9)
             {
                 previousOnStatHealth = _healthCurrent;
-                riseOnStatsEvent(); //we will send event only of 0.9% of hp update
+                RpcRiseOnStatsEvent(); //we will send event only of 0.9% of hp update
             }
         }
     }
@@ -60,6 +63,7 @@ public class LifeStats : MonoBehaviour
         healthCurrent = healthMax;
     }
 
+    [Server]
     void Update()
     {
         regenerateHealth();
@@ -75,11 +79,11 @@ public class LifeStats : MonoBehaviour
         }
     }
     
-
-    public void takeDamage(float amount)
+    [Command]
+    public void CmdTakeDamage(float amount)
     {
         healthCurrent -= amount;
-        riseOnDamagEvent(amount);
+        RpcRiseOnDamagEvent(amount);
         deathReport();
     }
 
@@ -89,7 +93,8 @@ public class LifeStats : MonoBehaviour
         if (healthCurrent > healthMax) healthCurrent = healthMax;
     }
 
-    void riseOnDamagEvent (float amount)
+    [ClientRpc]
+    void RpcRiseOnDamagEvent (float amount)
     {
         if (OnDamage!= null) OnDamage(amount);
     }
@@ -100,15 +105,23 @@ public class LifeStats : MonoBehaviour
     {
         if (healthCurrent <= 0)
         {
-            if (OnDeath != null)
-            {
-                // Announce enemy death to subscibers
-                OnDeath();
-            }
+            RpcDeathReport();
         }
     }
 
-    void riseOnStatsEvent()
+    [ClientRpc]
+    public void RpcDeathReport()
+    {
+        if (OnDeath != null)
+        {
+            // Announce enemy death to subscibers
+            OnDeath();
+        }
+
+    }
+
+    [ClientRpc]
+    void RpcRiseOnStatsEvent()
     {
         if (OnStats != null) OnStats();
     }

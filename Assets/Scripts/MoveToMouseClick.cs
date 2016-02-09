@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class MoveToMouseClick : MonoBehaviour {
+public class MoveToMouseClick : NetworkBehaviour {
 
 
     public Transform target;
@@ -17,21 +18,34 @@ public class MoveToMouseClick : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-	    if (Input.GetMouseButtonDown(1) )
+        //if (isLocalPlayer)
+        if (isLocalPlayer)
         {
-            Vector3 hitPos;
-            if (GetMouseHitPosition(out hitPos))
+            Debug.Log("Nove to click Is hasAuthority");
+            if (Input.GetMouseButtonDown(1))
             {
-                //target = tmpTarget;
-                agent.SetDestination(hitPos);
-                
+                Vector3 hitPos;
+                if (GetMouseHitPosition(out hitPos))
+                {
+                    //target = tmpTarget;
+                    //agent.SetDestination(hitPos);
+                    CmdSetDestanation(hitPos);
+                    
+                }
+            }
+            else
+            {
+                return;
             }
         }
-        else
-        {
-            return;
-        }
 	}
+
+    [Command]
+    void CmdSetDestanation(Vector3 hitPos)
+    {
+        agent.SetDestination(hitPos);
+    }
+
 
     float GetPathLenght()
     {

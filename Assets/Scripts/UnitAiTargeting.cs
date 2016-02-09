@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(UnitOwner))]
-public class UnitAiTargeting : MonoBehaviour {
+public class UnitAiTargeting : NetworkBehaviour {
 
     public float rotationSpeedMax = 200f;
     public GameObject target;
@@ -22,16 +23,23 @@ public class UnitAiTargeting : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        owner = GetComponent<UnitOwner>();
-
+        if (hasAuthority)
+        {
+            owner = GetComponent<UnitOwner>();
+        }
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
         //to shoot we need to turn towords target
-        turnTowardsTarget();
-        checkTargetForValidable();
+        if (hasAuthority)
+        {
+
+            Debug.Log("targeting on");
+            turnTowardsTarget();
+            checkTargetForValidable();
+        }
     }
 
     void FixedUpdate()

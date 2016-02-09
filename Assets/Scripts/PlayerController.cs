@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(UnitOwner))]
-public class PlayerController : MonoBehaviour {
+public class PlayerController : NetworkBehaviour {
 
     public GameObject[] unitList;
+    //public GameObject testUnitPrefab;
     
     UnitsPrefubList unitPrefabs;
     public int selectedUnit = -1;
@@ -13,25 +15,34 @@ public class PlayerController : MonoBehaviour {
     public delegate void OnSelectionAction(GameObject selected);
     public OnSelectionAction OnSelection;
 
-    
+
 
 
     // Use this for initialization
-    void Start () {
-
-        initUnitPrefabList();
-        AddNewUnitToSquad();
-        SelectAnyUnit();
-
+    //public override void OnStartClient()
+    void Start ()
+    {
+        
+        //if (isLocalPlayer)
+        {
+            initUnitPrefabList();
+            AddNewUnitToSquad();
+            SelectAnyUnit();
+        }
+        
 
     }
-	
-	// Update is called once per frame
-	void Update () {
 
 
-        SquadCommandToMove();
-        testPart();
+    // Update is called once per frame
+
+    void Update () {
+
+        if (isLocalPlayer)
+        {
+            SquadCommandToMove();
+            testPart();
+        }
 
     }
 
@@ -46,6 +57,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (Input.GetKeyDown("space"))
         {
+            Debug.Log("Space is Pressed");
             AddNewUnitToSquad();
         }
     }
@@ -80,9 +92,12 @@ public class PlayerController : MonoBehaviour {
 
     void initUnitPrefabList()
     {
+
         GameObject tmp = GameObject.FindGameObjectWithTag("UnitsPrefabList");
         unitPrefabs = tmp.GetComponent<UnitsPrefubList>();
-        if (unitPrefabs == null) Debug.Log("UnitsPrefubList");
+
+        //unitPrefabs = GetComponent<UnitsPrefubList>();
+        if (unitPrefabs == null) Debug.LogError("UnitsPrefubList DoesNot Found");
     }
 
 
@@ -255,7 +270,9 @@ public class PlayerController : MonoBehaviour {
             if (unitSlot == null)
             {
 
-                unitList[i] = CreateNewUnit();
+                // WE CANNOT directy get spawned unit - he will communicate with us later
+                //unitList[i] = CreateNewUnit();
+                CmdCreateNewUnit();
                 res = true;
                 break;
             }
@@ -266,13 +283,61 @@ public class PlayerController : MonoBehaviour {
         return res;
     }
 
-    GameObject CreateNewUnit()
+    [Command]
+    public void CmdCreateNewUnit()
     {
-        GameObject res = Instantiate(unitPrefabs.unitPrefubs[0], this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
-        res.SendMessage("SetSquadControler", this.gameObject);
-        res.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
-        return res;
+
+
+        Debug.LogError("CreateNewUnit: Instantiating");
+
+        if (unitPrefabs == null) Debug.LogError("prefubList null");
+        GameObject obj = Instantiate(unitPrefabs.unitPrefubs[0], this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
+        //GameObject res = Instantiate(testUnitPrefab, this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
+
+
+        if (obj == null)
+        {
+            Debug.LogError("CreateNewUnit: cannot instantiate");
+            return ;
+        }
+
+        obj.SendMessage("SetSquadControler", this.gameObject);
+        obj.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
+
+        // that will help created unit at clients to register at the squad
+        obj.SendMessage("SetPanetNetId", this.netId);
+        obj.SendMessage("SetParentRegistratorName", "AddUnitToSquad");
+        obj.transform.parent = this.transform;
+
+
+        //NetworkServer.SpawnWithClientAuthority(res, this.gameObject);
+
+        NetworkServer.SpawnWithClientAuthority(obj, this.connectionToClient);
+        //NetworkServer.Spawn(obj);
+
+
+        return;
     }
+
+    public void AddUnitToSquad(GameObject obj)
+    {
+        bool freeSlotIsFound = false;
+
+        for (int i = 0; i < unitList.Length; i++)
+        {
+            if (unitList[i] == null)
+            {
+                unitList[i] = obj;
+                freeSlotIsFound = true;
+                break;
+            }
+        }
+
+        if (!freeSlotIsFound) Debug.LogError("Cannot find free slot to assign new unit");
+
+    }
+
+
 
     void SelectAnyUnit()
     {
