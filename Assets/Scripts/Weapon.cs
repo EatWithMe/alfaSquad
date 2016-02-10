@@ -91,14 +91,21 @@ public class Weapon : NetworkBehaviour {
     {
         if (weaponCurrent != null) Destroy(weaponCurrent);
         weaponCurrent = Instantiate(weaponList.GetWeaponPrefub(index), this.transform.position, this.transform.rotation) as GameObject;
+
         
+
         weaponCurrent.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
         weaponCurrent.SendMessage("SetPanetNetId", this.netId);
         weaponCurrent.SendMessage("SetParentRegistratorName", "PickUpWeapon");
 
         weaponCurrent.transform.parent = this.transform;
 
-        NetworkServer.SpawnWithClientAuthority(weaponCurrent, this.connectionToClient);
+
+
+
+        //NetworkServer.SpawnWithClientAuthority(weaponCurrent, this.connectionToClient);
+        NetworkIdentity identity = this.GetComponent<NetworkIdentity>();
+        NetworkServer.SpawnWithClientAuthority(weaponCurrent, identity.clientAuthorityOwner);
     }
 
     public void PickUpWeapon(GameObject wpn)

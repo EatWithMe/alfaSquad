@@ -164,8 +164,9 @@ public class WeaponTemplate : NetworkBehaviour
         bulletTmp.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
         bulletTmp.SendMessage("SetNetStartingRotation", bullerRotation);
 
-        NetworkServer.SpawnWithClientAuthority(bulletTmp, this.connectionToClient);
-
+        //NetworkServer.SpawnWithClientAuthority(bulletTmp, this.connectionToClient);
+        NetworkIdentity identity = this.GetComponent<NetworkIdentity>();
+        NetworkServer.SpawnWithClientAuthority(bulletTmp, identity.clientAuthorityOwner);
     }
 
     Quaternion BulletRandomAccuracy(Quaternion gunDirection)

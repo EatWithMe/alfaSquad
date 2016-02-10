@@ -7,15 +7,19 @@ public class UnitOwner : MonoBehaviour {
     //public string playerName = "Player";
 
     [SerializeField]
-    private string _playerName = "Player";
+    public string playerName = "Player";
+    //private string _playerName = "Player";
     /// <summary>
     /// -1 - all are enemyes
     /// 0 - N team index
     /// </summary>
     [SerializeField]
-    private int _teamIndex = -1;
+    public int teamIndex = -1;
+    //private int _teamIndex = -1;
+
     [SerializeField]
-    private int _playerIndex = -1;
+    public int playerIndex = -1;
+    //private int _playerIndex = -1;
 
 
 
@@ -32,14 +36,14 @@ public class UnitOwner : MonoBehaviour {
 
         if (owner != null)
         {
-            parent = owner;
+            //parent = owner;
             this.playerName = owner.playerName;
             this.playerIndex = owner.playerIndex;
             this.teamIndex = owner.teamIndex;
         }
     }
 
-
+    /*
     public string playerName
     {
         get
@@ -86,7 +90,7 @@ public class UnitOwner : MonoBehaviour {
         set { _playerIndex = value; }
 
     }
-
+    */
 
 
 
