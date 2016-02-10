@@ -287,9 +287,7 @@ public class PlayerController : NetworkBehaviour {
     public void CmdCreateNewUnit()
     {
 
-
-        Debug.LogError("CreateNewUnit: Instantiating");
-
+       
         if (unitPrefabs == null) Debug.LogError("prefubList null");
         GameObject obj = Instantiate(unitPrefabs.unitPrefubs[0], this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
         //GameObject res = Instantiate(testUnitPrefab, this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;

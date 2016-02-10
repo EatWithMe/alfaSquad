@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class Weapon : MonoBehaviour {
+public class Weapon : NetworkBehaviour {
 
     public GameObject weaponCurrent;
     //public GameObject[] weaponPrefubList;
@@ -56,24 +57,56 @@ public class Weapon : MonoBehaviour {
         }
         else
         {
-            weaponCurrent = Instantiate( weaponList.GetWeaponPrefub(0) , this.transform.position, this.transform.rotation) as GameObject;
-            weaponCurrent.gameObject.transform.parent = this.transform;
+            //setDeafaultWeapon
+            switchWeaponTo(0);
         }
 
     }
 
     void switchWeaponTo(int index)
     {
-        if ( index > weaponList.Length)
+        if ( index >= weaponList.Length)
         {
             Debug.LogError("Cannot switch weapon to [" + index + "] for object = " + this.gameObject.name);
         }
         else
         {
 
-            Destroy(weaponCurrent);
-            weaponCurrent = weaponCurrent = Instantiate( weaponList.GetWeaponPrefub(index) , this.transform.position, this.transform.rotation) as GameObject;
+            
+            GameObject weaponPref = weaponList.GetWeaponPrefub(index);
+            if (weaponPref != null)
+            {
+                CmdCreateNewWeaponUnprotected(index);
+            }
+            else
+            {
+                Debug.LogError("Cannot switch weapon to [" + index + "]. prefub is empty. for object = " + this.gameObject.name);
+            }
+            
         }
     }
 
+    [Command]
+    public void CmdCreateNewWeaponUnprotected(int index)
+    {
+        if (weaponCurrent != null) Destroy(weaponCurrent);
+        weaponCurrent = Instantiate(weaponList.GetWeaponPrefub(index), this.transform.position, this.transform.rotation) as GameObject;
+        
+        weaponCurrent.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
+        weaponCurrent.SendMessage("SetPanetNetId", this.netId);
+        weaponCurrent.SendMessage("SetParentRegistratorName", "PickUpWeapon");
+
+        weaponCurrent.transform.parent = this.transform;
+
+        NetworkServer.SpawnWithClientAuthority(weaponCurrent, this.connectionToClient);
+    }
+
+    public void PickUpWeapon(GameObject wpn)
+    {
+        weaponCurrent = wpn;
+        wpn.transform.parent = this.transform;
+        wpn.transform.rotation = this.transform.rotation;
+
+        //wpn.transform.localPosition = new Vector3(0, 0, 0);
+    }
 }

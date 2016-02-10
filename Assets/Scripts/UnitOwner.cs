@@ -114,7 +114,7 @@ public class UnitOwner : MonoBehaviour {
         }
         else
         {
-            res = ! isFriendly(p1, p2); ;
+            res = !  UnitOwner.isFriendly(p1, p2); ;
         }
         return res;
     }

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class WeaponTemplate : MonoBehaviour
+public class WeaponTemplate : NetworkBehaviour
 {
     
 
@@ -157,10 +158,14 @@ public class WeaponTemplate : MonoBehaviour
     void SomeEffect()
     {
         GameObject bulletTmp;
-        bulletTmp = Instantiate(bulletPrefab, FirePoint.position, BulletRandomAccuracy(FirePoint.rotation)) as GameObject;
-        //bulletTmp.transform.parent = this.transform;
+        Quaternion bullerRotation = BulletRandomAccuracy(FirePoint.rotation);
 
-        //Instantiate(bulletPrefab, this.transform.position, this.transform.rotation); //todo redo
+        bulletTmp = Instantiate(bulletPrefab, FirePoint.position, bullerRotation) as GameObject;
+        bulletTmp.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
+        bulletTmp.SendMessage("SetNetStartingRotation", bullerRotation);
+
+        NetworkServer.SpawnWithClientAuthority(bulletTmp, this.connectionToClient);
+
     }
 
     Quaternion BulletRandomAccuracy(Quaternion gunDirection)

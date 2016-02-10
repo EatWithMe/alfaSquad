@@ -23,10 +23,10 @@ public class UnitAiTargeting : NetworkBehaviour {
     // Use this for initialization
     void Start ()
     {
-        if (hasAuthority)
-        {
+        //if (hasAuthority)
+        //{
             owner = GetComponent<UnitOwner>();
-        }
+        //}
     }
 	
 	// Update is called once per frame

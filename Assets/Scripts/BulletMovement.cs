@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class BulletMovement : MonoBehaviour {
+public class BulletMovement : NetworkBehaviour {
 
     public int moveSpeed = 20;
     public int lifeTimeSec = 5;
@@ -44,7 +45,8 @@ public class BulletMovement : MonoBehaviour {
         {
             if (hit.transform)
             {
-                DoDamageToHitObject(hit.collider);
+                //bullet calculate only at client side
+                if (hasAuthority)  DoDamageToHitObject(hit.collider);
                 DestroyBullet();
                 return;
             }
