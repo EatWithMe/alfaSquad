@@ -86,13 +86,40 @@ public class LifeStats : NetworkBehaviour
         }
     }
     
-    [Command]
-    public void CmdTakeDamage(float amount)
+
+    public void TakeDamage(float amount)
     {
-        healthCurrent -= amount;
-        RpcRiseOnDamagEvent(amount);
-        deathReport();
+
+        Debug.Log("aaaaa " + this.gameObject.name);
+        if (isServer)
+            {
+            healthCurrent -= amount;
+            DeathReport();
+            RpcTakeDamage(amount);
+
+        }
+        else
+        {
+
+            CmdTakeDamage(amount);
+            return;
+            
+        }
     }
+
+
+    [Command]
+    void CmdTakeDamage(float amount)
+    {
+        TakeDamage(amount);
+    }
+
+    [ClientRpc]
+    void RpcTakeDamage(float amount)
+    {
+        if (OnDamage != null) OnDamage(amount);
+    }
+
 
     public void takeHeal(float amount)
     {
@@ -100,15 +127,9 @@ public class LifeStats : NetworkBehaviour
         if (healthCurrent > healthMax) healthCurrent = healthMax;
     }
 
-    [ClientRpc]
-    void RpcRiseOnDamagEvent (float amount)
-    {
-        if (OnDamage!= null) OnDamage(amount);
-    }
 
 
-    
-    void deathReport()
+    void DeathReport()
     {
         if (healthCurrent <= 0)
         {

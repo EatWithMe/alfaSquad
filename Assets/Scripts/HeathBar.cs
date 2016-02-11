@@ -21,19 +21,35 @@ public class HeathBar : MonoBehaviour {
 
         OnMyStatsUpdate(); //update current stats
         lifeStats.OnStats += OnMyStatsUpdate; // and subscribe for  health changes
-
+        lifeStats.OnDamage += OnDamageEvent;
 
     }
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
 
-    public void UpdateHealth()
+
+        UpdateHealth();
+    }
+
+    public void OnDamageEvent(float amount)
+    {
+        //we dont care about amount
+        UpdateHealth();
+    }
+
+    void UpdateHealth()
     {
 
-        
+        healthCurrent = lifeStats.healthCurrent;
+
+        //Debug.Log("healthCurrent = " + healthCurrent);
+        //Debug.Log("lifeStats.healthCurrent = " + lifeStats.healthCurrent);
+        //Debug.Log("lifeStats.healthCurrent = " + lifeStats._healthCurrent);
+
+
+        healthCurrent = lifeStats.healthCurrent;
+
         float h = ((healthCurrent ) / (healthMax) );
         if (h < 0 )
         {
@@ -55,6 +71,7 @@ public class HeathBar : MonoBehaviour {
         //healthCanvas.transform.localScale = new Vector3(h, 1, 1);
         healthBar.transform.localScale = new Vector3(h, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
 
+        
     }
 
     public void OnMyStatsUpdate()

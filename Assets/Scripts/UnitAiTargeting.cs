@@ -139,7 +139,7 @@ public class UnitAiTargeting : NetworkBehaviour {
             }
             else
             {
-                Debug.Log("targetIsShootable HIT HONIGT");
+                //Debug.Log("targetIsShootable HIT HONIGT");
             }
         }
 

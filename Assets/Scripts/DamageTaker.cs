@@ -27,6 +27,7 @@ public class DamageTaker : MonoBehaviour  {
 
     void ReportToSquadAboutMyDeath()
     {
+
         if (squadControler != null)
         {
             squadControler.SendMessage("UnitIsDead", this.gameObject);
@@ -39,7 +40,7 @@ public class DamageTaker : MonoBehaviour  {
     {
         if ( damageTextPrefub != null)
         {
-
+            
 
             Quaternion rot = Quaternion.Euler(90,0,0);
             GameObject pop;
@@ -52,7 +53,11 @@ public class DamageTaker : MonoBehaviour  {
                 flText.SetFloatingText(amount.ToString("#."), Color.red);
             }
         }
+
     }
+
+
+
 
     public void SetSquadControler(GameObject squad)
     {

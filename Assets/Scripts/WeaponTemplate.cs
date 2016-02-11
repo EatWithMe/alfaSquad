@@ -150,13 +150,13 @@ public class WeaponTemplate : NetworkBehaviour
     void ShootABullet()
     {
         shootDelayEndTime = Time.time + shotsDelay;
-        SomeEffect();
+        CmdCreateBullet();
         PlaySound(ShootSound);
         IncreaseAccuracy();
     }
 
-    
-    void SomeEffect()
+    [Command]
+    void CmdCreateBullet()
     {
         GameObject bulletTmp;
         Quaternion bullerRotation = BulletRandomAccuracy(FirePoint.rotation);
@@ -166,8 +166,12 @@ public class WeaponTemplate : NetworkBehaviour
         bulletTmp.SendMessage("SetNetStartingRotation", bullerRotation);
 
         //NetworkServer.SpawnWithClientAuthority(bulletTmp, this.connectionToClient);
-        NetworkIdentity identity = this.GetComponent<NetworkIdentity>();
-        NetworkServer.SpawnWithClientAuthority(bulletTmp, identity.clientAuthorityOwner);
+
+        //we cannot use client autority couse i cannot GiveDame to non aothorised object
+        //NetworkIdentity identity = this.GetComponent<NetworkIdentity>();
+        //NetworkServer.SpawnWithClientAuthority(bulletTmp, identity.clientAuthorityOwner);
+
+        NetworkServer.Spawn(bulletTmp);
     }
 
     Quaternion BulletRandomAccuracy(Quaternion gunDirection)

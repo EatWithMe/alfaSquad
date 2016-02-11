@@ -46,7 +46,7 @@ public class BulletMovement : NetworkBehaviour {
             if (hit.transform)
             {
                 //bullet calculate only at client side
-                if (hasAuthority)  DoDamageToHitObject(hit.collider);
+                if (isServer)  DoDamageToHitObject(hit.collider);
                 DestroyBullet();
                 return;
             }
@@ -78,19 +78,23 @@ public class BulletMovement : NetworkBehaviour {
 
     void DoDamageToHitObject(Collider other)
     {
-        //Debug.Log("we hit  = " + other.name);
 
+        other.gameObject.SendMessage("TakeDamage",bulletDamage);
+
+        /*
         //if we hit something and this compounent have lifes 
         LifeStats victim = other.gameObject.GetComponent<LifeStats>();
         if (victim != null)
         {
             //Debug.Log("ifestats is FOUND!!!");
-            victim.CmdTakeDamage(bulletDamage);
+            victim.TakeDamage(bulletDamage);
         }
         else
         {
             //Debug.Log("Cannot fine lifestats");
         }
+
+        */
 
         DestroyBullet();
 
