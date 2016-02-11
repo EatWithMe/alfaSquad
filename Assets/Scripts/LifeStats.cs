@@ -58,15 +58,22 @@ public class LifeStats : NetworkBehaviour
 
 
     // Use this for initialization
+    
     void Start()
     {
-        healthCurrent = healthMax;
+        if (isServer)
+        {
+            healthCurrent = healthMax;
+        }
     }
 
-    [Server]
+    
     void Update()
     {
-        regenerateHealth();
+        if (isServer)
+        {
+            regenerateHealth();
+        }
     }
 
     

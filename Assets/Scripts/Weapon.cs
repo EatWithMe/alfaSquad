@@ -15,17 +15,36 @@ public class Weapon : NetworkBehaviour {
 
     // Use this for initialization
     void Start () {
+        InitWeaponList();
+        //remote clients will have AUTHORITY at first iteration - when server will not have it
+        if (hasAuthority)
+        {
+            SetDefaultWeapon();
+        }
 
-       InitWeaponList();
-
-       SetDefaultWeapon();
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
+
+
+    // Update is called once per frame
+    void Update () {
+
+        if ( hasAuthority)
+        {
+            NoEmptyWeaponForHoxtFIx();
+        }   
+
+    }
+
+    void NoEmptyWeaponForHoxtFIx()
+    {
+        if (weaponCurrent == null)
+        {
+
+            SetDefaultWeapon();
+        }
+    }
+    
 
     void InitWeaponList()
     {
@@ -47,7 +66,7 @@ public class Weapon : NetworkBehaviour {
     }
 
 
-    void SetDefaultWeapon()
+    public void SetDefaultWeapon()
     {
 
         if (weaponList.Length <= 0)
@@ -58,6 +77,7 @@ public class Weapon : NetworkBehaviour {
         else
         {
             //setDeafaultWeapon
+            
             switchWeaponTo(0);
         }
 
@@ -72,7 +92,6 @@ public class Weapon : NetworkBehaviour {
         else
         {
 
-            
             GameObject weaponPref = weaponList.GetWeaponPrefub(index);
             if (weaponPref != null)
             {
@@ -99,9 +118,6 @@ public class Weapon : NetworkBehaviour {
         weaponCurrent.SendMessage("SetParentRegistratorName", "PickUpWeapon");
 
         weaponCurrent.transform.parent = this.transform;
-
-
-
 
         //NetworkServer.SpawnWithClientAuthority(weaponCurrent, this.connectionToClient);
         NetworkIdentity identity = this.GetComponent<NetworkIdentity>();

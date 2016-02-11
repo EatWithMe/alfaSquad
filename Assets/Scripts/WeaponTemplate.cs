@@ -155,6 +155,7 @@ public class WeaponTemplate : NetworkBehaviour
         IncreaseAccuracy();
     }
 
+    
     void SomeEffect()
     {
         GameObject bulletTmp;

@@ -35,8 +35,6 @@ public class UnitAiTargeting : NetworkBehaviour {
         //to shoot we need to turn towords target
         if (hasAuthority)
         {
-
-            Debug.Log("targeting on");
             turnTowardsTarget();
             checkTargetForValidable();
         }

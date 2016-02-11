@@ -22,10 +22,12 @@ public class PlayerController : NetworkBehaviour {
     //public override void OnStartClient()
     void Start ()
     {
-        
-        //if (isLocalPlayer)
+
+        initUnitPrefabList();
+
+        if (isLocalPlayer)
         {
-            initUnitPrefabList();
+            
             AddNewUnitToSquad();
             SelectAnyUnit();
         }
@@ -57,7 +59,6 @@ public class PlayerController : NetworkBehaviour {
     {
         if (Input.GetKeyDown("space"))
         {
-            Debug.Log("Space is Pressed");
             AddNewUnitToSquad();
         }
     }
@@ -290,6 +291,8 @@ public class PlayerController : NetworkBehaviour {
        
         if (unitPrefabs == null) Debug.LogError("prefubList null");
         GameObject obj = Instantiate(unitPrefabs.unitPrefubs[0], this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
+        //after instantiating 1 iteration object will not have authoraty
+        //obj.GetComponent<NetworkIdentity>().AssignClientAuthority(this.connectionToClient);
         //GameObject res = Instantiate(testUnitPrefab, this.transform.position + new Vector3(0, 1, 0), this.transform.rotation) as GameObject;
 
 
@@ -298,6 +301,7 @@ public class PlayerController : NetworkBehaviour {
             Debug.LogError("CreateNewUnit: cannot instantiate");
             return ;
         }
+        
 
         obj.SendMessage("SetSquadControler", this.gameObject);
         obj.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
@@ -305,13 +309,12 @@ public class PlayerController : NetworkBehaviour {
         // that will help created unit at clients to register at the squad
         obj.SendMessage("SetPanetNetId", this.netId);
         obj.SendMessage("SetParentRegistratorName", "AddUnitToSquad");
-        obj.transform.parent = this.transform;
 
-
-        //NetworkServer.SpawnWithClientAuthority(res, this.gameObject);
+        obj.transform.parent = this.transform; // this set up parent at host
 
         NetworkServer.SpawnWithClientAuthority(obj, this.connectionToClient);
-        //NetworkServer.Spawn(obj);
+
+
 
 
         return;
