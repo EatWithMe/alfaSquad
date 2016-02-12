@@ -104,6 +104,8 @@ public class PlayerController : NetworkBehaviour {
 
     void SquadCommandToMove()
     {
+        
+
         if (Input.GetMouseButtonDown(1))
         {
             Vector3 hitPos;
@@ -123,12 +125,12 @@ public class PlayerController : NetworkBehaviour {
     {
         if ( unitList.Length > 0 )
         {
-
+            
             GameObject selUnitl = getSelectedUnit();
 
             if (selUnitl != null)
             {
-
+                
                 int formationIndex = 0;
                 int listIndex = selectedUnit;
                 for ( int i = 0 ; i < unitList.Length; i++)
@@ -142,6 +144,7 @@ public class PlayerController : NetworkBehaviour {
 
                     if (unit != null)
                     {
+
                         UnitMoovement movement;
                         movement = unit.GetComponent<UnitMoovement>();
 
@@ -149,11 +152,11 @@ public class PlayerController : NetworkBehaviour {
                         {
                             if (foundNewFormatedPosition(formationIndex, selUnitl.transform.position, hitPos, out moveTo))
                             {
-                                movement.SetTarget(moveTo);
+                                movement.CmdSetTarget(moveTo);
                             }
                             else
                             {
-                                movement.SetTarget(hitPos);
+                                movement.CmdSetTarget(hitPos);
                             }
                         }
                         else
@@ -329,6 +332,7 @@ public class PlayerController : NetworkBehaviour {
             if (unitList[i] == null)
             {
                 unitList[i] = obj;
+                if (selectedUnit < 0) selectedUnit = i;
                 freeSlotIsFound = true;
                 break;
             }

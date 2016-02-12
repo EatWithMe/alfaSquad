@@ -90,7 +90,6 @@ public class LifeStats : NetworkBehaviour
     public void TakeDamage(float amount)
     {
 
-        Debug.Log("aaaaa " + this.gameObject.name);
         if (isServer)
             {
             healthCurrent -= amount;
