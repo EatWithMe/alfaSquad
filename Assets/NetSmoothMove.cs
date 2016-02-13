@@ -65,16 +65,30 @@ public class NetSmoothMove : NetworkBehaviour {
         */
     }
 
+    void Update()
+    {
+        if (!isServer)
+        {
+            {
+                transform.position = Vector3.Lerp(this.transform.position, realPosition, syncTime);
+                transform.rotation = Quaternion.Lerp(this.transform.rotation, realRotation, syncTime);
+            }
+
+        }
+    }
+
+
     void FixedUpdate()
     {
         
         if (!isServer)
         {
-            //if (!hasAuthority)
+            /*
             {
-                transform.position = Vector3.Lerp(this.transform.position, realPosition, Time.fixedDeltaTime / syncTime);
-                transform.rotation = Quaternion.Lerp(this.transform.rotation, realRotation, Time.fixedDeltaTime / syncTime);
+                transform.position = Vector3.Lerp(this.transform.position, realPosition, syncTime);
+                transform.rotation = Quaternion.Lerp(this.transform.rotation, realRotation,  syncTime);
             }
+            */
         }
         else
         {
@@ -95,8 +109,4 @@ public class NetSmoothMove : NetworkBehaviour {
     }
 
 
-
-    void Update()
-    {
-    }
 }
