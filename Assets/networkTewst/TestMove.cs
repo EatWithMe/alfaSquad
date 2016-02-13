@@ -11,25 +11,26 @@ public class TestMove : NetworkBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
         if (hasAuthority)
         {
-            if (Input.GetKeyDown("w"))
+            if (Input.GetKey("w"))
             {
-               MoveChild(-1);
+               CmdMoveChild(-10);
             }
-            else if (Input.GetKeyDown("s"))
+            else if (Input.GetKey("s"))
             {
-                MoveChild(1);
+                CmdMoveChild(10);
             }
         }
     }
 
 
-    //[Command]
-    void MoveChild(int dir)
+    [Command]
+    void CmdMoveChild(int dir)
     {
         //RpcMoveChild(dir);
-        transform.Translate(Vector3.left * dir);
+        transform.Translate(Vector3.left * dir * Time.deltaTime);
     }
 
 }

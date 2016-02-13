@@ -40,7 +40,7 @@ public class TestScriptSpawner : NetworkBehaviour {
         //obj.transform.parent = this.transform;
 
         //obj.parentNetId = this.netId;
-        obj.SendMessage("MsgSetPanetNetId",this.netId);
+        //obj.SendMessage("MsgSetPanetNetId",this.netId);
 
         obj.transform.parent = this.transform; //Set the parent transform on the server
 
