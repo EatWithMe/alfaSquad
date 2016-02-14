@@ -42,7 +42,6 @@ public class NetSmoothMove : NetworkBehaviour {
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
         //base.OnDeserialize(reader, initialState);
-        Debug.Log("sadddsdadss");
         realPosition = reader.ReadVector3();
         realRotation = reader.ReadQuaternion();
 

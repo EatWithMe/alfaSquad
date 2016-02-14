@@ -33,9 +33,10 @@ public class UnitAiTargeting : NetworkBehaviour {
 	void Update ()
     {
         //to shoot we need to turn towords target
+        turnTowardsTarget();
+
         if (hasAuthority)
         {
-            turnTowardsTarget();
             checkTargetForValidable();
         }
     }
@@ -153,25 +154,35 @@ public class UnitAiTargeting : NetworkBehaviour {
     {
         if ( target != null)
         {
-            if (turnTowardsPoint(target.transform.position))
+            //all instanses turring
+            bool weAreTurnedToTarget = turnTowardsPoint(target.transform.position) ;
+
+            //but does not press trigger
+            if (hasAuthority)
             {
-                PushTheWeaponTrigger(true);
-            }
-            else
-            {
-                PushTheWeaponTrigger(false);
+                if (weAreTurnedToTarget)
+                {
+                    PushTheWeaponTrigger(true);
+                }
+                else
+                {
+                    PushTheWeaponTrigger(false);
+                }
             }
         }
         else
         {
-            PushTheWeaponTrigger(false);
-
-            //we can  search targets only 1 per time interwal
-            if (Time.time > targetSearchAllowedFromTime  )
+            if (hasAuthority)
             {
-                // we need to find new target
-                findNewTarget();
-                targetSearchAllowedFromTime += targetSearchDelay;
+                PushTheWeaponTrigger(false);
+
+                //we can  search targets only 1 per time interwal
+                if (Time.time > targetSearchAllowedFromTime)
+                {
+                    // we need to find new target
+                    findNewTarget();
+                    targetSearchAllowedFromTime += targetSearchDelay;
+                }
             }
         }
     }
@@ -191,7 +202,7 @@ public class UnitAiTargeting : NetworkBehaviour {
     {
         
         GameObject closestTarget = null;
-        float closestDistance = 10000f;
+        float closestDistance = 1000f;
 
 
         Collider[] objAroundUs = Physics.OverlapSphere(transform.position, radius);
@@ -248,16 +259,48 @@ public class UnitAiTargeting : NetworkBehaviour {
 
     void setNewTarget(GameObject newTarget)
     {
-        target = newTarget;
+
+        //target = newTarget; // commended - because we will recieave turget from server
+
+
         //if we set new target - then retargeting can only be allowed in delay
         nextcheckTargetDistanceTime = Time.time + checkTargetDistanceTimeDealay;
+
+        NetworkIdentity ni = newTarget.GetComponent<NetworkIdentity>();
+        if ( ni!= null )
+        {
+            CmdSetNewTarget( ni.netId);
+        }
+        else
+        {
+            Debug.LogError("New target does not have netId. Item Name = [" + newTarget.name + "]");
+        }
+        
+
     }
 
+    [Command]
+    void CmdSetNewTarget (NetworkInstanceId id)
+    {
+        target = ClientScene.FindLocalObject(id);
+        RpcSetNewTarget(id);
+    }
+
+
+    [ClientRpc]
+    void RpcSetNewTarget(NetworkInstanceId id)
+    {
+        //if (!hasAuthority)
+        {
+            target = ClientScene.FindLocalObject(id);
+        }
+    }
+
+
     /// <summary>
-    /// ture - if we already faced to target;
     /// </summary>
     /// <param name="RotateToTarget"></param>
-    /// <returns></returns>
+    /// <returns>true - if we already faced to target;</returns>
     bool turnTowardsPoint(Vector3 RotateToTarget)
     {
 
