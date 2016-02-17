@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(SquadExp))]
 public class UpgradeMenu : MonoBehaviour {
 
 
@@ -12,16 +13,21 @@ public class UpgradeMenu : MonoBehaviour {
     public GUIStyle itemDescription;
     public GUIStyle itemVal;
     public GUIStyle separators;
+    public GUIStyle closeMenu;
 
     private WeaponList weaponPrefabs;
 
     private Vector2 scrollPosition = Vector2.zero;
     private float scroolBarValue;
 
+    private SquadExp squadExp;
+
+
     // Use this for initialization
     void Start()
     {
         initWeaponList();
+        squadExp = GetComponent<SquadExp>();
     }
 
     void initWeaponList()
@@ -48,14 +54,15 @@ public class UpgradeMenu : MonoBehaviour {
     void OnGUI()
     {
 
-        if (skin) GUI.skin = skin;
-
-        int creenWidth = Screen.width;
-        int creenHeight = Screen.height;
-
-
         if (showGui)
         {
+
+            if (skin) GUI.skin = skin;
+
+            int creenWidth = Screen.width;
+            int creenHeight = Screen.height;
+
+
             GUI.Box(new Rect(50, 50, creenWidth - 100, creenHeight - 100), "Unit upgrade");
 
 
@@ -72,13 +79,19 @@ public class UpgradeMenu : MonoBehaviour {
             }
 
             GUI.EndScrollView();
+
+            if (GUI.Button(new Rect( creenWidth/2 -25 , creenHeight-120, 50, 20), "Close" , closeMenu) )
+            {
+                showGui = false;
+            }
+
         }
     }
     
 
-    void CreateButtonFOrWeapon( int topLeftX, int topLeftY, int index)
+    void CreateButtonFOrWeapon( int topLeftX, int topLeftY, int weaponIndex)
     {
-        WeaponTemplate weapon = weaponPrefabs.GetWeaponPrefub(index).GetComponent<WeaponTemplate>();
+        WeaponTemplate weapon = weaponPrefabs.GetWeaponPrefub(weaponIndex).GetComponent<WeaponTemplate>();
 
         const int cardWidth = 200;
         const int cardHeight = 300;
@@ -87,9 +100,16 @@ public class UpgradeMenu : MonoBehaviour {
 
         int itemX = 110;
 
+        int weapCost = weapon.weaponCost;
+
         if (GUI.Button(new Rect(topLeftX, topLeftY, cardWidth, cardHeight), ""))
         {
             //todo onWeaponSelection
+            if ( squadExp.spendMoney(weapCost) )
+            {
+                SendMessage("SetWeaponForSelectedUnit", weaponIndex);
+                ShowUpgradeMenu(false);
+            }
         }
 
         GUI.Label(new Rect(topLeftX + 12, topLeftY + 26, 60, 25), weapon.weaponCost.ToString(), cardCostStyle);
@@ -117,4 +137,8 @@ public class UpgradeMenu : MonoBehaviour {
 
     }
 
+    public void ShowUpgradeMenu(bool newState)
+    {
+        showGui = newState;
+    }
 }

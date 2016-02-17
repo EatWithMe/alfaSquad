@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(UnitOwner))]
+[RequireComponent(typeof(SquadExp))]
 public class PlayerController : NetworkBehaviour {
 
     public GameObject[] unitList;
@@ -416,4 +417,20 @@ public class PlayerController : NetworkBehaviour {
         }
     }
 
+    public void SetWeaponForSelectedUnit(int weaponIndex)
+    {
+
+        GameObject unit = unitList[selectedUnit];
+
+
+        if (unit)
+        {
+                unit.SendMessage("switchWeaponTo", weaponIndex); 
+        }
+        else
+        {
+            //SendMessage("CashBachForLostWeapon", weaponIndex);
+            Debug.Log("Cannto switch Weapon - no unit selected");
+        }
+    }
 }

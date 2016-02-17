@@ -8,7 +8,7 @@ public class SquadExp : MonoBehaviour {
         get { return _money; }
     }
 
-    private int _money = 0;
+    private int _money = 10;
     private float squadExpTotal = 0;
     private float squadExp = 0;
     private int expToMoney = 100; //100 exp = 1 money

@@ -83,7 +83,7 @@ public class Weapon : NetworkBehaviour {
 
     }
 
-    void switchWeaponTo(int index)
+    public void switchWeaponTo(int index)
     {
         if ( index >= weaponList.Length)
         {
