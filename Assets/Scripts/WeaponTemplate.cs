@@ -11,10 +11,11 @@ public class WeaponTemplate : NetworkBehaviour
 
     public AudioClip ShootSound;
     public AudioClip ReloadSound;
-    
-    
+
+    public int weaponCost = 1;
 
     //weapon stats
+    public int damage = 30;
     public int clipSize = 5;
     public float shotsDelay = 1f;
     private float reloadTimeSeconds = 3f; //  ReloadSound.length
