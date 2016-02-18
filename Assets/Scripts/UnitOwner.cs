@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 //[System.Serializable]
@@ -18,18 +19,18 @@ public class UnitOwner : MonoBehaviour {
     //private int _teamIndex = -1;
 
     [SerializeField]
-    public int playerIndex = -1;
+    //public int playerIndex = -1;
     //private int _playerIndex = -1;
 
 
-
+    public NetworkInstanceId playerNetId;
 
 
 
     private static bool friendlyFire = false;
 
 
-    private UnitOwner parent = null;
+    //private UnitOwner parent = null;
 
     public void setOwnerShip( UnitOwner owner)
     {
@@ -38,7 +39,8 @@ public class UnitOwner : MonoBehaviour {
         {
             //parent = owner;
             this.playerName = owner.playerName;
-            this.playerIndex = owner.playerIndex;
+            //this.playerIndex = owner.playerIndex;
+            this.playerNetId = owner.playerNetId;
             this.teamIndex = owner.teamIndex;
         }
     }
@@ -101,9 +103,16 @@ public class UnitOwner : MonoBehaviour {
     public static bool isFriendly(UnitOwner p1 , UnitOwner p2)
     {
         bool res = false;
-        if ( p1.teamIndex >= 0)
+        if (p1.teamIndex >= 0)
         {
             if (p1.teamIndex == p2.teamIndex) res = true;
+        }
+        else
+        {
+            if (p1.playerNetId == p2.playerNetId)
+            {
+                res = true;
+            }
         }
         return res;
     }

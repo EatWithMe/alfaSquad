@@ -25,14 +25,8 @@ public class NetSmoothMove : NetworkBehaviour {
     //reading from the stream
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-
-        Debug.Log("sadddsdadsssadasds WRTITE");
-
         writer.Write(this.transform.position);
         writer.Write(this.transform.rotation);
-       
-
-
         return true;
     }
 
