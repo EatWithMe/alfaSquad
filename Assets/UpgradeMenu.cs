@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(SquadExp))]
-public class UpgradeMenu : MonoBehaviour {
+public class UpgradeMenu : NetworkBehaviour {
 
 
     public bool showGui = true;
@@ -26,6 +27,8 @@ public class UpgradeMenu : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        if (!isLocalPlayer) enabled = false;
+
         initWeaponList();
         squadExp = GetComponent<SquadExp>();
     }

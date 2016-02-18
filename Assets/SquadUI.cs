@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 
 [RequireComponent(typeof(SquadExp))]
-public class SquadUI : MonoBehaviour {
+public class SquadUI : NetworkBehaviour {
 
     SquadExp sqExp;
 
@@ -11,6 +12,8 @@ public class SquadUI : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        if (!isLocalPlayer) enabled = false;
+
         sqExp = GetComponent<SquadExp>();
     }
 	
@@ -21,7 +24,7 @@ public class SquadUI : MonoBehaviour {
 
     void OnGUI()
     {
-        Debug.Log("on guids");
+        
         int screenWidth = Screen.width;
         int sreenHeight = Screen.height;
 

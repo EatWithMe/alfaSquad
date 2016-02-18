@@ -10,10 +10,10 @@ public class UnitAiTargeting : NetworkBehaviour {
     public const float autoTargetMaxDistance = 100;
 
     private float targetSearchAllowedFromTime;
-    private float targetSearchDelay = 1f; // we can serarch only 1 per sec
+    private float targetSearchDelay = 0.5f; // we can serarch only 1 per sec
 
     private float nextcheckTargetDistanceTime = 0;
-    private float checkTargetDistanceTimeDealay = 3f; // we will check current target only 1 per n sec
+    private float checkTargetDistanceTimeDealay = 1f; // we will check current target only 1 per n sec
 
     private UnitOwner owner;
 
@@ -266,18 +266,37 @@ public class UnitAiTargeting : NetworkBehaviour {
         //if we set new target - then retargeting can only be allowed in delay
         nextcheckTargetDistanceTime = Time.time + checkTargetDistanceTimeDealay;
 
-        NetworkIdentity ni = newTarget.GetComponent<NetworkIdentity>();
-        if ( ni!= null )
+        if (newTarget != null)
         {
-            CmdSetNewTarget( ni.netId);
+            NetworkIdentity ni = newTarget.GetComponent<NetworkIdentity>();
+            if (ni != null)
+            {
+                CmdSetNewTarget(ni.netId);
+            }
+            else
+            {
+                Debug.LogError("New target does not have netId. Item Name = [" + newTarget.name + "]");
+            }
         }
         else
         {
-            Debug.LogError("New target does not have netId. Item Name = [" + newTarget.name + "]");
+            CmdResetTarget();
         }
-        
-
     }
+
+    [Command]
+    void CmdResetTarget()
+    {
+        target = null;
+        RpcResetTarget();
+    }
+
+    [ClientRpc]
+    void RpcResetTarget()
+    {
+        target = null;
+    }
+
 
     [Command]
     void CmdSetNewTarget (NetworkInstanceId id)
@@ -290,10 +309,7 @@ public class UnitAiTargeting : NetworkBehaviour {
     [ClientRpc]
     void RpcSetNewTarget(NetworkInstanceId id)
     {
-        //if (!hasAuthority)
-        {
-            target = ClientScene.FindLocalObject(id);
-        }
+        target = ClientScene.FindLocalObject(id);
     }
 
 
