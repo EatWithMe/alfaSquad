@@ -6,7 +6,11 @@ public class TeamsController : NetworkBehaviour {
 
     [SyncVar]
     public int numberOfTeams = 2; //-1 ,0 , 1 ; -1 = hostile to all - we have 3 teams
-    ArrayList teamsArray; // array of arrays
+
+    [SyncVar]
+    public SyncListInt numberOfPlayers;
+
+    private ArrayList teamsArray; // array of arrays
 
 	// Use this for initialization
 	void Start ()
@@ -34,10 +38,16 @@ public class TeamsController : NetworkBehaviour {
     void reSizeTeamArray()
     {
         teamsArray = new ArrayList();
+
+        numberOfPlayers = new SyncListInt() ;
+        
+
+
         for (int i = 0; i <= (numberOfTeams -1 + 1 ); i++)
         {
             ArrayList teamArray = new ArrayList();
             teamsArray.Add(teamArray);
+            numberOfPlayers.Add(0);
         }
     }
 
@@ -107,9 +117,16 @@ public class TeamsController : NetworkBehaviour {
         }
     }
 
-    public int GetNomberOfPlayersInTheTeam(int teamIndex)
+    public int GetNumberOfPlayersInTheTeam(int teamIndex)
     {
-        return ((ArrayList)teamsArray[teamIndex]).Count;
+        int res = -1;
+
+        if (teamIndex <= numberOfTeams)
+        {
+            res = numberOfPlayers[teamIndex + 1]; // -1 0 1 ; +1
+        }
+
+        return res;
     }
 
  }

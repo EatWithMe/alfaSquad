@@ -4,31 +4,54 @@ using System.Collections;
 
 public class MyNetworkManager : NetworkManager
 {
+    private TeamsController teamCtrl;
 
-/*
-    private int playerCount = 0;
-    void OnPlayerConnected(NetworkPlayer player)
+    /*
+        private int playerCount = 0;
+        void OnPlayerConnected(NetworkPlayer player)
+        {
+            Debug.Log("Player " + playerCount++ + " connected from " + player.ipAddress + ":" + player.port);
+        }
+
+        void OnPlayerDisconnected(NetworkPlayer player)
+        {
+            Debug.Log("Clean up after player " + player);
+            //Network.RemoveRPCs(player);
+            //Network.DestroyPlayerObjects(player);
+        }
+
+        */
+
+    public void Start()
     {
-        Debug.Log("Player " + playerCount++ + " connected from " + player.ipAddress + ":" + player.port);
+        
     }
 
-    void OnPlayerDisconnected(NetworkPlayer player)
+
+    public override void OnStartServer()
     {
-        Debug.Log("Clean up after player " + player);
-        //Network.RemoveRPCs(player);
-        //Network.DestroyPlayerObjects(player);
+        base.OnStartServer();
+        InitTeamController();
     }
 
-    */
+    void InitTeamController()
+    {
+        GameObject obj = GameObject.FindGameObjectWithTag("TeamsController");
+        if (obj)
+        {
+            teamCtrl = obj.GetComponent<TeamsController>();
+        }
+        else
+        {
+            Debug.LogError("Cannot init team ctrl. Cannot find object.");
+        }
 
+
+    }
     public override void OnServerConnect(NetworkConnection conn)
     {
         Debug.Log("On COnnect");
-
-        // The code in here runs fine when a Client connects to the Server.
         base.OnServerConnect(conn);
-        //NetworkManager.singleton.
-
     }
 
     // Called on the Server when a Client disconnects from the Server.
@@ -36,8 +59,7 @@ public class MyNetworkManager : NetworkManager
     {
         Debug.Log("On dissconnect");
         base.OnServerDisconnect(conn);
-        // The code in here does not run when a Client disconnects from the Server.
-        
+        if (teamCtrl) teamCtrl.RemoveDeadPlayerObjects();
     }
 
 }
