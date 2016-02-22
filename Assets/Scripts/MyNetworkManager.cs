@@ -44,6 +44,7 @@ public class MyNetworkManager : NetworkManager
         else
         {
             Debug.LogError("Cannot init team ctrl. Cannot find object.");
+
         }
 
 
