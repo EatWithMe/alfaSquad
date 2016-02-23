@@ -29,7 +29,7 @@ public class PlayerController : NetworkBehaviour {
         if (isLocalPlayer)
         {
             
-            AddNewUnitToSquad();
+            //AddNewUnitToSquad();
             SelectAnyUnit();
         }
         
@@ -286,6 +286,11 @@ public class PlayerController : NetworkBehaviour {
 
 
         return res;
+    }
+
+    public void MsgAddNewUnitToSquad()
+    {
+        AddNewUnitToSquad();
     }
 
     [Command]

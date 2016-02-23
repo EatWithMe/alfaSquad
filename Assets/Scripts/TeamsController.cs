@@ -5,7 +5,7 @@ using System.Collections;
 public class TeamsController : NetworkBehaviour {
 
     [SyncVar]
-    public int numberOfTeams = 2; //-1 ,0 , 1 ; -1 = hostile to all - we have 3 teams
+    public int numberOfTeams = 3; //0 , 1  2; 0 = hostile to all - we have 3 teams
 
     [SyncVar]
     public SyncListInt numberOfPlayers = new SyncListInt();
@@ -61,7 +61,7 @@ public class TeamsController : NetworkBehaviour {
         teamsArray = new ArrayList();
 
 
-        for (int i = 0; i <= (numberOfTeams -1 + 1 ); i++)
+        for (int i = 0; i <= (numberOfTeams -1 ); i++)
         {
             ArrayList teamArray = new ArrayList();
             teamsArray.Add(teamArray);
@@ -120,7 +120,7 @@ public class TeamsController : NetworkBehaviour {
     [Server]
     public void RemoveDeadPlayerObjects()
     {
-        for ( int teamIndex = 0; teamIndex <= (numberOfTeams - 1 + 1) ; teamIndex++)
+        for ( int teamIndex = 0; teamIndex <= (numberOfTeams - 1 ) ; teamIndex++)
         {
             ArrayList team = ((ArrayList)teamsArray[teamIndex]);
             for (int i = ( team.Count - 1) ; i >=0 ; i--)
@@ -141,7 +141,7 @@ public class TeamsController : NetworkBehaviour {
 
         if (teamIndex <= numberOfTeams)
         {
-            res = numberOfPlayers[teamIndex + 1]; // -1 0 1 ; +1
+            res = numberOfPlayers[teamIndex]; //  0 1 2; 
         }
 
         return res;

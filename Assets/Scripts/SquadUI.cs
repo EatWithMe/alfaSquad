@@ -7,7 +7,7 @@ using System.Collections;
 public class SquadUI : NetworkBehaviour {
 
     SquadExp sqExp;
-
+    private bool onGui = false;
 
 	// Use this for initialization
 	void Start ()
@@ -24,18 +24,18 @@ public class SquadUI : NetworkBehaviour {
 
     void OnGUI()
     {
-        
-        int screenWidth = Screen.width;
-        int sreenHeight = Screen.height;
 
-        
-
-
-        //GUI.Box(new Rect(20, sreenHeight - 20 - 50 , 50, 50), "price");
-
-        if (GUI.Button(new Rect(20, sreenHeight - 20 - 50, 50, 50), sqExp.money.ToString() ) )
+        if (onGui)
         {
-            OpenUpgradeMenu();
+            int screenWidth = Screen.width;
+            int sreenHeight = Screen.height;
+
+            //GUI.Box(new Rect(20, sreenHeight - 20 - 50 , 50, 50), "price");
+
+            if (GUI.Button(new Rect(20, sreenHeight - 20 - 50, 50, 50), sqExp.money.ToString()))
+            {
+                OpenUpgradeMenu();
+            }
         }
 
 
@@ -44,5 +44,10 @@ public class SquadUI : NetworkBehaviour {
     void OpenUpgradeMenu()
     {
         SendMessage("ShowUpgradeMenu", true);
+    }
+
+    public void ShowMoneyGui(bool val)
+    {
+        onGui = val;
     }
 }

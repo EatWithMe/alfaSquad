@@ -15,7 +15,7 @@ public class UnitOwner : MonoBehaviour {
     /// 0 - N team index
     /// </summary>
     [SerializeField]
-    public int teamIndex = -1;
+    public int teamIndex = 0;
     //private int _teamIndex = -1;
 
     [SerializeField]
@@ -103,15 +103,20 @@ public class UnitOwner : MonoBehaviour {
     public static bool isFriendly(UnitOwner p1 , UnitOwner p2)
     {
         bool res = false;
-        if (p1.teamIndex >= 0)
+
+        if (p1.playerNetId == p2.playerNetId)
         {
-            if (p1.teamIndex == p2.teamIndex) res = true;
+            res = true;
         }
         else
         {
-            if (p1.playerNetId == p2.playerNetId)
+            if (p1.teamIndex > 0)
             {
-                res = true;
+                if (p1.teamIndex == p2.teamIndex) res = true;
+            }
+            else
+            {
+                //res = false;
             }
         }
         return res;

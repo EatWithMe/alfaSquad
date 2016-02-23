@@ -13,10 +13,16 @@ public class InitUnitOwner : NetworkBehaviour {
     // Use this for initialization
     void Awake()
     {
+        //if (!isLocalPlayer)
+        //{
+        //    enabled = false;
+        //    return;
+       //}
+
         owner = this.GetComponent<UnitOwner>();
 
         owner.playerName = "lalalal";
-        owner.teamIndex = -1;
+        owner.teamIndex = 0; // 0 - free for all; 
         owner.playerNetId = this.netId;
 
         InitTeamsNumber();
@@ -53,33 +59,34 @@ public class InitUnitOwner : NetworkBehaviour {
         if (showGui)
         {
 
-            if ( (teamNumber+1) <=1 )
+            if ( (teamNumber) <=1 )
             {
-                SubmitTeamSelection(-1);
+                SubmitTeamSelection(0);
             }
             else
             {
                 int screenHeight = Screen.height;
                 int screenWidth = Screen.width;
 
-                int buttonHeight = 150;
+                int buttonHeight = 100;
                 int buttonWidth = 100;
 
                 int numberOfTeams = teamsController.numberOfTeams;
+                Debug.Log("numberOfTeams = " + numberOfTeams);
 
                 int outterBorder = 5;
-                int boxWidth = outterBorder * (numberOfTeams + 1) + numberOfTeams * buttonWidth;
-                int boxHeight = buttonWidth + 30 + outterBorder;
+                int boxWidth = outterBorder * (numberOfTeams + 1 ) + numberOfTeams * buttonWidth;
+                int boxHeight = buttonHeight + 30 + outterBorder;
 
                 GUI.Box(new Rect((screenWidth - boxWidth) / 2, (screenHeight - boxHeight) / 2, boxWidth, boxHeight), "Select team");
 
                 for ( int buttonIndex = 0; buttonIndex<numberOfTeams; buttonIndex++)
                 {
-                    int topLeftX = ((screenWidth - boxWidth) / 2) + outterBorder * buttonIndex;
+                    int topLeftX = ((screenWidth - boxWidth) / 2) + buttonIndex * buttonWidth + outterBorder * buttonIndex + outterBorder;
                     int topLeftY = (screenHeight - boxHeight) / 2 + 30;
 
 
-                    GuiTeamButton(topLeftX, topLeftY, buttonWidth, buttonHeight, buttonIndex -1 );
+                    GuiTeamButton(topLeftX, topLeftY, buttonWidth, buttonHeight, buttonIndex );
                 }
 
 
@@ -91,22 +98,24 @@ public class InitUnitOwner : NetworkBehaviour {
     {
         string buttonName = "";
 
-        if (teamIndex <= -1)
+        if (teamIndex == 0)
         {
             buttonName = "Madmans";
         }
         else
         {
-            buttonName = "Team " + ((int)(teamIndex + 1)).ToString();
+            buttonName = "Team " + ((int)(teamIndex )).ToString();
         }
 
-        if (GUI.Button(new Rect(topLeftX, topLeftY, width, height), buttonName ))
+        if (GUI.Button(new Rect(topLeftX, topLeftY, width, height), "" ))
         {
             SubmitTeamSelection(teamIndex);
         }
 
-        int numberOfPlayersInTheTeam = teamsController.numberOfPlayers[teamIndex+1];
-        GUI.Label(new Rect(topLeftX + width/2, topLeftY + height/2, 60, 25), numberOfPlayersInTheTeam.ToString() );
+        int numberOfPlayersInTheTeam = teamsController.numberOfPlayers[teamIndex];
+
+        GUI.Label(new Rect(topLeftX + 5, topLeftY + 10, width - 10, 25), buttonName );
+        GUI.Label(new Rect(topLeftX + 5, topLeftY + height/2, width - 10, 25), numberOfPlayersInTheTeam.ToString() );
 
     }
 
@@ -118,6 +127,7 @@ public class InitUnitOwner : NetworkBehaviour {
         owner.teamIndex = teamIndex;
         teamsController.RegisterPlayerSquadInTeam(this.gameObject);
         SetTeamSelectionGui(false);
+        SendMessage("MsgTeamSelectionComplite");
     }
     
     void SetTeamSelectionGui(bool val)

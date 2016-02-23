@@ -6,7 +6,7 @@ using System.Collections;
 public class UpgradeMenu : NetworkBehaviour {
 
 
-    public bool showGui = false;
+    private bool showGui = false;
 
     public GUISkin skin;
     public GUIStyle cardCostStyle;
