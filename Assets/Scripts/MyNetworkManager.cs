@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine.Networking.Match;
 
 public class MyNetworkManager : NetworkManager
 {
     private TeamsController teamCtrl;
+    public GameObject teamCtrlPrefub;
 
     /*
         private int playerCount = 0;
@@ -22,16 +24,43 @@ public class MyNetworkManager : NetworkManager
 
         */
 
-    public void Start()
+    
+    public override void OnClientConnect(NetworkConnection conn)
     {
-        
+        Debug.Log("oNcLIENTcoNNECT");
+        base.OnClientConnect(conn);
+        InitTeamController();
+    }
+
+    //public override void OnStartHost()
+    //{
+    //    base.OnStartHost();
+    //    Debug.Log("OnStartHost");
+    //    //SpawnTeamController();
+    //}
+
+    public override void OnServerReady(NetworkConnection conn)
+    {
+        base.OnServerReady(conn);
+        Debug.Log("OnServerReady");
+        SpawnTeamController();
     }
 
 
-    public override void OnStartServer()
+
+    //public override void OnStartServer()
+    //{
+    //    Debug.Log("oNsTARTsERVER");
+    //    base.OnStartServer();
+    //    //SpawnTeamController();
+    //}
+
+    void SpawnTeamController()
     {
-        base.OnStartServer();
-        InitTeamController();
+        Debug.Log("SpawnTeamController");
+        GameObject obj = Instantiate(teamCtrlPrefub);
+        teamCtrl = obj.GetComponent<TeamsController>();
+        NetworkServer.Spawn(obj);
     }
 
     void InitTeamController()
@@ -49,11 +78,14 @@ public class MyNetworkManager : NetworkManager
 
 
     }
-    public override void OnServerConnect(NetworkConnection conn)
+
+    
+
+    public void LinkWithTeamCtrl(TeamsController tCtrl)
     {
-        Debug.Log("On COnnect");
-        base.OnServerConnect(conn);
+        teamCtrl = tCtrl;
     }
+
 
     // Called on the Server when a Client disconnects from the Server.
     public override void OnServerDisconnect(NetworkConnection conn)

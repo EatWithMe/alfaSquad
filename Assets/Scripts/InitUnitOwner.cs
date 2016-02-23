@@ -26,14 +26,25 @@ public class InitUnitOwner : NetworkBehaviour {
 
     void InitTeamsNumber()
     {
+
+        Debug.Log("InitTeamsNumber");
+
         GameObject obj =  GameObject.FindGameObjectWithTag("TeamsController");
         if (obj)
         {
-            TeamsController teamsController = obj.GetComponent<TeamsController>();
+            teamsController = obj.GetComponent<TeamsController>();
             if (teamsController)
             {
                 teamNumber = teamsController.numberOfTeams;
             }
+            else
+            {
+                Debug.LogError("Cannot GetComponent<TeamsController> ");
+            }
+        }
+        else
+        {
+            Debug.LogError("Cannot FindGameObjectWithTag(TeamsController) ");
         }
     }
 
@@ -94,7 +105,7 @@ public class InitUnitOwner : NetworkBehaviour {
             SubmitTeamSelection(teamIndex);
         }
 
-        int numberOfPlayersInTheTeam = teamsController.numberOfPlayers[teamIndex];
+        int numberOfPlayersInTheTeam = teamsController.numberOfPlayers[teamIndex+1];
         GUI.Label(new Rect(topLeftX + width/2, topLeftY + height/2, 60, 25), numberOfPlayersInTheTeam.ToString() );
 
     }

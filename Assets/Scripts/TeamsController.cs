@@ -8,16 +8,18 @@ public class TeamsController : NetworkBehaviour {
     public int numberOfTeams = 2; //-1 ,0 , 1 ; -1 = hostile to all - we have 3 teams
 
     [SyncVar]
-    public SyncListInt numberOfPlayers;
+    public SyncListInt numberOfPlayers = new SyncListInt();
 
     private ArrayList teamsArray; // array of arrays
 
+    
 	// Use this for initialization
 	void Start ()
     {
         if (isServer)
         {
             reSizeTeamArray();
+            //LinkToNetworkManager();
         }
     }
 	
@@ -28,6 +30,23 @@ public class TeamsController : NetworkBehaviour {
 	
 	}
 
+    
+    void LinkToNetworkManager()
+    {
+        GameObject netMngObj = GameObject.FindGameObjectWithTag("myNetworkManager");
+        if (netMngObj != null)
+        {
+            MyNetworkManager netMng = netMngObj.GetComponent<MyNetworkManager>();
+            netMng.LinkWithTeamCtrl(this);
+        }
+        else
+        {
+            Debug.Log("Cannot find gameobject teamCotlooer;");
+        }
+
+    }
+
+
     [Server]
     void SetNumberOfTeams(int newTeamNumber)
     {
@@ -37,10 +56,9 @@ public class TeamsController : NetworkBehaviour {
     [Server]
     void reSizeTeamArray()
     {
-        teamsArray = new ArrayList();
 
-        numberOfPlayers = new SyncListInt() ;
-        
+        Debug.Log("reSizeTeamArray");
+        teamsArray = new ArrayList();
 
 
         for (int i = 0; i <= (numberOfTeams -1 + 1 ); i++)
@@ -51,7 +69,7 @@ public class TeamsController : NetworkBehaviour {
         }
     }
 
-    /*
+
     void FillListWithCurrentPlayers()
     {
         GameObject[] playerList;
@@ -64,14 +82,14 @@ public class TeamsController : NetworkBehaviour {
             UnitOwner owner = obj.GetComponent<UnitOwner>();
             if (owner)
             {
-                if ( owner.teamIndex >=0)
+                if (owner.teamIndex >= 0)
                 {
-                   ((ArrayList)teamsArray[owner.teamIndex]).Add(obj);
+                    ((ArrayList)teamsArray[owner.teamIndex]).Add(obj);
                 }
-                
+
             }
         }
-        */
+    }    
 
     public void RegisterPlayerSquadInTeam(GameObject squad)
     {
@@ -129,4 +147,5 @@ public class TeamsController : NetworkBehaviour {
         return res;
     }
 
+    
  }
