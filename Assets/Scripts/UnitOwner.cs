@@ -3,26 +3,29 @@ using UnityEngine.Networking;
 using System.Collections;
 
 //[System.Serializable]
-public class UnitOwner : MonoBehaviour {
+public class UnitOwner : NetworkBehaviour {
 
     //public string playerName = "Player";
 
-    [SerializeField]
+    //[SerializeField]
+    [SyncVar]
     public string playerName = "Player";
     //private string _playerName = "Player";
     /// <summary>
-    /// -1 - all are enemyes
-    /// 0 - N team index
+    /// 0 - all are enemyes
+    /// 1 - N team index
     /// </summary>
-    [SerializeField]
+    /// 
+    //[SerializeField]
+    [SyncVar]
     public int teamIndex = 0;
     //private int _teamIndex = -1;
 
-    [SerializeField]
+    //[SerializeField]
     //public int playerIndex = -1;
     //private int _playerIndex = -1;
 
-
+    [SyncVar]
     public NetworkInstanceId playerNetId;
 
 
@@ -104,6 +107,9 @@ public class UnitOwner : MonoBehaviour {
     {
         bool res = false;
 
+        Debug.Log("p1.playerNetId = "+ p1.playerNetId.Value);
+        Debug.Log("p2.playerNetId = " + p2.playerNetId.Value);
+
         if (p1.playerNetId == p2.playerNetId)
         {
             res = true;
@@ -119,6 +125,7 @@ public class UnitOwner : MonoBehaviour {
                 //res = false;
             }
         }
+
         return res;
     }
 

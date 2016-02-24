@@ -44,6 +44,7 @@ public class FindNetParent : NetworkBehaviour {
 
     public void SetPanetNetId(NetworkInstanceId pNetID)
     {
+        Debug.Log("pNetID = " + pNetID);
         parentNetId = pNetID;
     }
     public void SetParentRegistratorName(string metodName)

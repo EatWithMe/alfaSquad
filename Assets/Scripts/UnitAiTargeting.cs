@@ -222,10 +222,11 @@ public class UnitAiTargeting : NetworkBehaviour {
                     UnitOwner colOwner = col.GetComponent<UnitOwner>();
                     if (colOwner == null) continue;
 
-                    
+                    Debug.Log("before isFriendly" + colOwner.teamIndex + "   owner = " + owner.teamIndex );
 
                     if (! UnitOwner.isFriendly(owner, colOwner) ) //we need to check eney or not
                     {
+                        Debug.Log("NOT FIENDLY");
 
                         if (targetIsShootable(col.gameObject))
                         {

@@ -24,12 +24,17 @@ public class MyNetworkManager : NetworkManager
 
         */
 
-    
+    public override void OnClientSceneChanged(NetworkConnection conn)
+    {
+        base.OnClientSceneChanged(conn);
+        InitTeamController();
+    }
+
     public override void OnClientConnect(NetworkConnection conn)
     {
         Debug.Log("oNcLIENTcoNNECT");
         base.OnClientConnect(conn);
-        InitTeamController();
+        //InitTeamController();
     }
 
     //public override void OnStartHost()
