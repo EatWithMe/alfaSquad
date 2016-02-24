@@ -107,9 +107,6 @@ public class UnitOwner : NetworkBehaviour {
     {
         bool res = false;
 
-        Debug.Log("p1.playerNetId = "+ p1.playerNetId.Value);
-        Debug.Log("p2.playerNetId = " + p2.playerNetId.Value);
-
         if (p1.playerNetId == p2.playerNetId)
         {
             res = true;

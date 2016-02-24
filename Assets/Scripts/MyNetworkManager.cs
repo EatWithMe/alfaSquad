@@ -26,10 +26,12 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnClientSceneChanged(NetworkConnection conn)
     {
+        Debug.Log("OnClientSceneChanged");
         base.OnClientSceneChanged(conn);
         InitTeamController();
     }
 
+    
     public override void OnClientConnect(NetworkConnection conn)
     {
         Debug.Log("oNcLIENTcoNNECT");
@@ -37,28 +39,20 @@ public class MyNetworkManager : NetworkManager
         //InitTeamController();
     }
 
-    //public override void OnStartHost()
-    //{
-    //    base.OnStartHost();
-    //    Debug.Log("OnStartHost");
-    //    //SpawnTeamController();
-    //}
-
-    public override void OnServerReady(NetworkConnection conn)
+    public override void OnStartHost()
     {
-        base.OnServerReady(conn);
-        Debug.Log("OnServerReady");
-        SpawnTeamController();
+        base.OnStartHost();
+        Debug.Log("OnStartHost");
+        //SpawnTeamController();
     }
 
 
-
-    //public override void OnStartServer()
-    //{
-    //    Debug.Log("oNsTARTsERVER");
-    //    base.OnStartServer();
-    //    //SpawnTeamController();
-    //}
+    public override void OnStartServer()
+    {
+        Debug.Log("oNsTARTsERVER");
+        base.OnStartServer();
+        //SpawnTeamController();
+    }
 
     void SpawnTeamController()
     {

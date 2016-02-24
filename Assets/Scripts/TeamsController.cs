@@ -19,7 +19,7 @@ public class TeamsController : NetworkBehaviour {
         if (isServer)
         {
             reSizeTeamArray();
-            //LinkToNetworkManager();
+            LinkToNetworkManager();
         }
     }
 	
@@ -96,10 +96,11 @@ public class TeamsController : NetworkBehaviour {
         UnitOwner owner = squad.GetComponent<UnitOwner>();
         if (owner)
         {
-            int teamIndex = owner.teamIndex +1 ; // +1 because -1 team is agains all
-            if (teamIndex <= numberOfTeams)
+            int teamIndex = owner.teamIndex ; 
+            if (teamIndex < numberOfTeams)
             {
                 ((ArrayList)teamsArray[owner.teamIndex]).Add(squad);
+                numberOfPlayers[owner.teamIndex]++;
             }
             else
             {
