@@ -17,15 +17,6 @@ public class ServerObjectSpawner : NetworkBehaviour {
 
 
     
-    
-    public override void OnStartServer()
-    {
-        Debug.Log("OnStartServer");
-        base.OnStartServer();
-        //SpawnAllObjects();
-
-    }
-
     void SpawnAllObjects()
     {
         if ( spawnList.Length>0 )

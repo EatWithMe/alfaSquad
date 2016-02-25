@@ -24,35 +24,31 @@ public class MyNetworkManager : NetworkManager
 
         */
 
-    public override void OnClientSceneChanged(NetworkConnection conn)
-    {
-        Debug.Log("OnClientSceneChanged");
-        base.OnClientSceneChanged(conn);
-        InitTeamController();
-    }
-
-    
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        Debug.Log("oNcLIENTcoNNECT");
-        base.OnClientConnect(conn);
-        //InitTeamController();
-    }
-
-    public override void OnStartHost()
-    {
-        base.OnStartHost();
-        Debug.Log("OnStartHost");
-        //SpawnTeamController();
-    }
+    /*
+public override void OnClientSceneChanged(NetworkConnection conn)
+{
+    Debug.Log("OnClientSceneChanged");
+    base.OnClientSceneChanged(conn);
+    InitTeamController();
+}
 
 
-    public override void OnStartServer()
-    {
-        Debug.Log("oNsTARTsERVER");
-        base.OnStartServer();
-        //SpawnTeamController();
-    }
+public override void OnClientConnect(NetworkConnection conn)
+{
+    Debug.Log("oNcLIENTcoNNECT");
+    base.OnClientConnect(conn);
+    //InitTeamController();
+}
+
+
+
+public override void OnStartServer()
+{
+    Debug.Log("oNsTARTsERVER");
+    base.OnStartServer();
+    //SpawnTeamController();
+}
+*/
 
     void SpawnTeamController()
     {
@@ -62,6 +58,7 @@ public class MyNetworkManager : NetworkManager
         NetworkServer.Spawn(obj);
     }
 
+    /*
     void InitTeamController()
     {
         GameObject obj = GameObject.FindGameObjectWithTag("TeamsController");
@@ -77,6 +74,7 @@ public class MyNetworkManager : NetworkManager
 
 
     }
+    */
 
     
 
@@ -87,11 +85,19 @@ public class MyNetworkManager : NetworkManager
 
 
     // Called on the Server when a Client disconnects from the Server.
+    public override void OnServerRemovePlayer(NetworkConnection conn, UnityEngine.Networking.PlayerController player)
+    {
+        base.OnServerRemovePlayer(conn, player);
+        Debug.Log("OnServerRemovePlayer");
+        //if (teamCtrl) teamCtrl.RemoveDeadPlayerObjects();
+        if (teamCtrl) teamCtrl.RemoveDeadPlayerObject(player.gameObject); //does not works also
+    }
+
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         Debug.Log("On dissconnect");
         base.OnServerDisconnect(conn);
-        if (teamCtrl) teamCtrl.RemoveDeadPlayerObjects();
+        //if (teamCtrl) teamCtrl.RemoveDeadPlayerObjects(); //here we cannot remove dead bodyes - because object is not deleted at this moment
     }
 
 }

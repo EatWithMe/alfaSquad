@@ -27,9 +27,6 @@ public class SquadTeamSelector : NetworkBehaviour {
 
     void InitTeamsNumber()
     {
-
-        Debug.Log("InitTeamsNumber");
-
         GameObject obj = GameObject.FindGameObjectWithTag("TeamsController");
         if (obj)
         {

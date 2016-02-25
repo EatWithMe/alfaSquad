@@ -25,7 +25,7 @@ public class SquadExp : MonoBehaviour {
 	}
     */
 
-    public void getSquadExp(float amount)
+    public void AddSquadExp(float amount)
     {
         squadExpTotal += amount;
         squadExp += amount;
@@ -33,6 +33,11 @@ public class SquadExp : MonoBehaviour {
         {
             conwertExtToMoney();
         }
+    }
+
+    public float GetTotalExp()
+    {
+        return squadExpTotal;
     }
 
     void conwertExtToMoney()

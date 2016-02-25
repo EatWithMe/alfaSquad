@@ -41,7 +41,7 @@ public class TeamsController : NetworkBehaviour {
         }
         else
         {
-            Debug.Log("Cannot find gameobject teamCotlooer;");
+            Debug.LogError("Cannot find gameobject teamCotlooer;");
         }
 
     }
@@ -57,7 +57,6 @@ public class TeamsController : NetworkBehaviour {
     void reSizeTeamArray()
     {
 
-        Debug.Log("reSizeTeamArray");
         teamsArray = new ArrayList();
 
 
@@ -131,10 +130,31 @@ public class TeamsController : NetworkBehaviour {
                 if (playerSquad == null)
                 {
                     team.RemoveAt(i);
+                    numberOfPlayers[teamIndex]--;
                 }
             }
         }
     }
+
+
+    [Server]
+    public void RemoveDeadPlayerObject(GameObject deadMan)
+    {
+        for ( int teamIndex = 0; teamIndex <= numberOfTeams; teamIndex++)
+        {
+            ArrayList team = ((ArrayList)teamsArray[teamIndex]);
+            if ( team.Contains(deadMan) )
+            {
+                team.Remove(deadMan);
+                numberOfPlayers[teamIndex]--;
+                break;
+            }
+        }
+    }
+     
+
+
+
 
     public int GetNumberOfPlayersInTheTeam(int teamIndex)
     {
@@ -148,5 +168,10 @@ public class TeamsController : NetworkBehaviour {
         return res;
     }
 
+
+    public ArrayList GetTeamsArray()
+    {
+        return teamsArray;
+    }
     
  }
