@@ -137,6 +137,7 @@ public class TeamScore : NetworkBehaviour {
                                 if (player == null)
                                 {
                                     team.RemoveAt(playerIndex);
+                                    teamCtrl.numberOfPlayers[teamIndex]--;
                                 }
                                 else
                                 {
@@ -162,15 +163,17 @@ public class TeamScore : NetworkBehaviour {
     {
         allPlayers.Sort();
 
+        topN.Clear();
+
         for (int i = 0; i <= maxPlayersInTop-1; i++)
         {
             if ( i >= allPlayers.Count)
             {
                 // we neet to put empty element
-                if (i < topN.Count)
-                {
-                    topN.RemoveAt(i);
-                }
+                //if (i < topN.Count)
+                //{
+                //    topN.RemoveAt(i);
+                //}
             }
             else
             {
