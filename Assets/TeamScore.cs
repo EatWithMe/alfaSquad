@@ -204,16 +204,18 @@ public class TeamScore : NetworkBehaviour {
 
                 int elemBorder = 5;
                 int elemWidth = 160;
-                int elemHeight = 25;
+                int elemHeight = 23;
 
 
-                int boxNameHeight = 25;
+                //int boxNameHeight = 25;
+                int boxNameHeight = 0;
                 int boxWidth = elemWidth + 2 * elemBorder;
                 int boxHeight = elemHeight * topN.Count + 2 * elemBorder + boxNameHeight;
                 int boxTopLeftX = screenWidth - 10 - boxWidth;
                 int boxTopLeftY = 10;
 
-                GUI.Box(new Rect(boxTopLeftX, boxTopLeftY, boxWidth, boxHeight), "TopN");
+                //GUI.Box(new Rect(boxTopLeftX, boxTopLeftY, boxWidth, boxHeight), "Top" + maxPlayersInTop.ToString() );
+                GUI.Box(new Rect(boxTopLeftX, boxTopLeftY, boxWidth, boxHeight), "");
 
                 for (int elemIndex = 0; elemIndex < topN.Count; elemIndex++)
                 {
@@ -228,9 +230,9 @@ public class TeamScore : NetworkBehaviour {
 
     void DrowElement(int topLeftX, int topLeftY, int elemIndex, string playerName, float playerScore)
     {
-        GUI.Label(new Rect(topLeftX, topLeftY, 10, 25), elemIndex.ToString());
-        GUI.Label(new Rect(topLeftX + 10, topLeftY, 80, 25), playerName );
-        GUI.Label(new Rect(topLeftX + 10 + 80, topLeftY, 40, 25), playerScore.ToString("0.#") );
+        GUI.Label(new Rect(topLeftX, topLeftY, 15, 23), (elemIndex + 1 ).ToString() + ":");
+        GUI.Label(new Rect(topLeftX + 15, topLeftY, 100, 23), playerName );
+        GUI.Label(new Rect(topLeftX + 15 + 100, topLeftY, 45, 23), playerScore.ToString("0.#") );
     }
 
 
