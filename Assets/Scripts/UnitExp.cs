@@ -77,4 +77,13 @@ public class UnitExp : MonoBehaviour {
 
         return res;
     }
+
+    public void GainExp(float amount)
+    {
+        expCurrent += amount;
+        CheckForLevelUp();
+
+        //report to squad about unitPesonalexp
+        SendMessageUpwards("GainExp",amount);
+    }
 }

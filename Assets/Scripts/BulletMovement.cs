@@ -8,6 +8,8 @@ public class BulletMovement : NetworkBehaviour {
     public int lifeTimeSec = 5;
     public int bulletDamage = 30;
 
+    
+
     void Start()
     {
         Destroy(gameObject, lifeTimeSec);
@@ -78,24 +80,11 @@ public class BulletMovement : NetworkBehaviour {
 
     void DoDamageToHitObject(Collider other)
     {
+        Damage dmg;
+        dmg.amount = bulletDamage;
+        dmg.ownderNetId = GetComponent<UnitOwner>().playerNetId;
 
-        other.gameObject.SendMessage("TakeDamage",bulletDamage);
-
-        /*
-        //if we hit something and this compounent have lifes 
-        LifeStats victim = other.gameObject.GetComponent<LifeStats>();
-        if (victim != null)
-        {
-            //Debug.Log("ifestats is FOUND!!!");
-            victim.TakeDamage(bulletDamage);
-        }
-        else
-        {
-            //Debug.Log("Cannot fine lifestats");
-        }
-
-        */
-
+        other.gameObject.SendMessage("TakeDamage",dmg);
         DestroyBullet();
 
     }

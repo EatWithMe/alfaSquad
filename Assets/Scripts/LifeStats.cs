@@ -85,33 +85,53 @@ public class LifeStats : NetworkBehaviour
             if (healthCurrent > healthMax) healthCurrent = healthMax;
         }
     }
+
+
     
-
-    public void TakeDamage(float amount)
+    //public void TakeDamage(float amount)
+    [Server]
+    public void TakeDamage(Damage dmg)
     {
-
+        
         if (isServer)
-            {
-            healthCurrent -= amount;
+        {
+            healthCurrent -= dmg.amount;
             DeathReport();
-            RpcTakeDamage(amount);
+            RpcTakeDamage(dmg.amount);
 
+
+            dmg.ownderNetId = this.netId;
+            ReportDamageOwnerAboutHit(dmg);
+        }
+        //else
+        //{
+
+            //CmdTakeDamage(amount);
+            //return;
+            
+        //}
+    }
+
+    [Server]
+    void ReportDamageOwnerAboutHit(Damage dmg)
+    {
+        GameObject bulletOwner = ClientScene.FindLocalObject(dmg.ownderNetId);
+        if ( bulletOwner!= null)
+        {
+            bulletOwner.SendMessage("DamageReportCallBack", dmg);
         }
         else
         {
-
-            CmdTakeDamage(amount);
-            return;
-            
+            Debug.Log("ReportDamageOwnerAboutHit: cannot find bullet owner");
         }
     }
 
 
-    [Command]
-    void CmdTakeDamage(float amount)
-    {
-        TakeDamage(amount);
-    }
+    //[Command]
+    //void CmdTakeDamage(float amount)
+    //{
+    //    TakeDamage(amount);
+    //}
 
     [ClientRpc]
     void RpcTakeDamage(float amount)

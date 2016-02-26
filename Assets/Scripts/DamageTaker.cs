@@ -71,4 +71,13 @@ public class DamageTaker : MonoBehaviour  {
     //   //Destroy(this.gameObject);
     //}
 
+    /// <summary>
+    /// this function called buy victim - he reports about damage
+    /// </summary>
+    /// <param name="dmg"></param>
+    public void DamageReportCallBack (Damage dmg)
+    {
+        
+    }
+
 }
