@@ -8,6 +8,7 @@ public class BulletMovement : NetworkBehaviour {
     public int lifeTimeSec = 5;
     public int bulletDamage = 30;
 
+    private static float randomDamageRange = 0.2f ; // in %
     
 
     void Start()
@@ -81,12 +82,19 @@ public class BulletMovement : NetworkBehaviour {
     void DoDamageToHitObject(Collider other)
     {
         Damage dmg;
-        dmg.amount = bulletDamage;
+        dmg.amount = GenerateRandomDamage( bulletDamage );
         dmg.ownderNetId = GetComponent<UnitOwner>().playerNetId;
 
         other.gameObject.SendMessage("TakeDamage",dmg);
         DestroyBullet();
 
     }
+
+    static float GenerateRandomDamage(float dmg)
+    {
+        float range = dmg * randomDamageRange;
+        return dmg + Random.Range(-1 * range, range);
+    }
+
 
 }
