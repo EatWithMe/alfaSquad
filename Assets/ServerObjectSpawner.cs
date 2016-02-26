@@ -7,14 +7,22 @@ public class ServerObjectSpawner : NetworkBehaviour {
     public GameObject[] spawnList;
 
 	// Use this for initialization
-	void Start () 
+
+
+	void Start() 
     {
-        SelfPrefabRegistration();
+        
 
         if (isServer)
         {
             SpawnAllObjects();
         }
+    }
+
+    public override void PreStartClient()
+    {
+        base.PreStartClient();
+        SelfPrefabRegistration();
     }
 
 

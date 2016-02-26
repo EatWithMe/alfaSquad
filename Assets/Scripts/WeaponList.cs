@@ -6,6 +6,8 @@ public class WeaponList : MonoBehaviour {
 
     [SerializeField]
     private GameObject[] weaponPrefubs;
+    [SerializeField]
+    private GameObject[] bulletPrefubs;
 
 
     void Start()
@@ -17,6 +19,7 @@ public class WeaponList : MonoBehaviour {
     void SelfPrefabRegistration()
     {
         MyRegistrator.NetworkPrefubsRegistration(weaponPrefubs);
+        MyRegistrator.NetworkPrefubsRegistration(bulletPrefubs);
     }
 
 

@@ -14,12 +14,12 @@ public class TeamsController : NetworkBehaviour {
 
     
 	// Use this for initialization
-	void Start ()
+	void Start()
     {
         if (isServer)
         {
             reSizeTeamArray();
-            LinkToNetworkManager();
+            //LinkToNetworkManager();
         }
     }
 	
@@ -41,7 +41,7 @@ public class TeamsController : NetworkBehaviour {
         }
         else
         {
-            Debug.LogError("Cannot find gameobject teamCotlooer;");
+            Debug.LogError("Cannot find gameobject teamController;");
         }
 
     }

@@ -16,39 +16,53 @@ public class SquadTeamSelector : NetworkBehaviour {
     {
         if (!isLocalPlayer) enabled = false;
         owner = GetComponent<UnitOwner>();
-        InitTeamsNumber();
+        StartCoroutine (InitTeamsNumber() );
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    //public override void OnStartClient()
+    //{
+    //    base.OnStartClient();
+    //}
+
+
+    // Update is called once per frame
+    void Update () {
 	
 	}
 
-
-    void InitTeamsNumber()
+    //IEnumerator WaitAndPrint(float waitTime)
+    IEnumerator InitTeamsNumber()
     {
-        GameObject obj = GameObject.FindGameObjectWithTag("TeamsController");
-        if (obj)
+        GameObject obj;
+        do
         {
-            teamsController = obj.GetComponent<TeamsController>();
-            if (teamsController)
+            obj = GameObject.FindGameObjectWithTag("TeamsController");
+
+            if (obj != null)
             {
-                teamNumber = teamsController.numberOfTeams;
+                teamsController = obj.GetComponent<TeamsController>();
+                if (teamsController)
+                {
+                    teamNumber = teamsController.numberOfTeams;
+                }
+                else
+                {
+                    Debug.LogError("Cannot GetComponent<TeamsController> ");
+                }
             }
             else
             {
-                Debug.LogError("Cannot GetComponent<TeamsController> ");
+                yield return new WaitForSeconds(0.1f); // contimue after 100ms
             }
+
+
         }
-        else
-        {
-            Debug.LogError("Cannot FindGameObjectWithTag(TeamsController) ");
-        }
+        while (obj == null);
     }
 
     void OnGUI()
     {
-        if (showGui)
+        if ( showGui && (teamsController != null ) )
         {
 
             if ((teamNumber) <= 1)
@@ -63,7 +77,7 @@ public class SquadTeamSelector : NetworkBehaviour {
                 int buttonHeight = 100;
                 int buttonWidth = 100;
 
-                int numberOfTeams = teamsController.numberOfTeams;
+                int numberOfTeams = teamNumber;
 
 
                 int outterBorder = 5;
@@ -104,11 +118,20 @@ public class SquadTeamSelector : NetworkBehaviour {
             SubmitTeamSelection(teamIndex);
         }
 
-        int numberOfPlayersInTheTeam = teamsController.numberOfPlayers[teamIndex];
+        
 
         GUI.Label(new Rect(topLeftX + 5, topLeftY + 10, width - 10, 25), buttonName);
-        GUI.Label(new Rect(topLeftX + 5, topLeftY + height / 2, width - 10, 25), numberOfPlayersInTheTeam.ToString());
 
+        //initialisation of teamsController.numberOfPlayers can be delayed - so we must ignore it for a while
+        if (teamsController.numberOfPlayers.Count > 0)
+        {
+            int numberOfPlayersInTheTeam = teamsController.numberOfPlayers[teamIndex];
+            GUI.Label(new Rect(topLeftX + 5, topLeftY + height / 2, width - 10, 25), numberOfPlayersInTheTeam.ToString());
+        }
+        else
+        {
+            Debug.LogError("teamsController.numberOfPlayers is not initialised in time" );
+        }
     }
 
 
