@@ -9,6 +9,8 @@ public class ServerObjectSpawner : NetworkBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        SelfPrefabRegistration();
+
         if (isServer)
         {
             SpawnAllObjects();
@@ -16,7 +18,13 @@ public class ServerObjectSpawner : NetworkBehaviour {
     }
 
 
-    
+    void SelfPrefabRegistration()
+    {
+        MyRegistrator.NetworkPrefubsRegistration(spawnList);
+    }
+
+
+
     void SpawnAllObjects()
     {
         if ( spawnList.Length>0 )
