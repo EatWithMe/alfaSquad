@@ -111,9 +111,14 @@ public class Weapon : NetworkBehaviour {
         if (weaponCurrent != null) Destroy(weaponCurrent);
         weaponCurrent = Instantiate(weaponList.GetWeaponPrefub(index), this.transform.position, this.transform.rotation) as GameObject;
 
-        
 
-        weaponCurrent.SendMessage("setOwnerShip", GetComponent<UnitOwner>());
+        //UnitOwner thisUnit = new UnitOwner();
+        //thisUnit.setOwnerShip(GetComponent<UnitOwner>());
+        //thisUnit.playerNetId = this.netId;
+
+
+        weaponCurrent.SendMessage("setOwnerShip", GetComponent<UnitOwner>()); // our owner is weapon owner
+        weaponCurrent.GetComponent<UnitOwner>().playerNetId = this.netId; //we override weapon owner to us
         weaponCurrent.SendMessage("SetPanetNetId", this.netId);
         weaponCurrent.SendMessage("SetParentRegistratorName", "PickUpWeapon");
 

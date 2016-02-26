@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class SquadExp : MonoBehaviour {
+public class SquadExp : NetworkBehaviour {
 
     public int money
     {
         get { return _money; }
     }
 
+    [SyncVar]
     private int _money = 10;
+
     private float squadExpTotal = 0;
     private float squadExp = 0;
     private int expToMoney = 100; //100 exp = 1 money
@@ -25,7 +28,7 @@ public class SquadExp : MonoBehaviour {
 	}
     */
 
-    public void AddSquadExp(float amount)
+    public void GainExp(float amount)
     {
         squadExpTotal += amount;
         squadExp += amount;
@@ -72,12 +75,19 @@ public class SquadExp : MonoBehaviour {
 
         if ( amount <= _money)
         {
-            _money -= amount;
+            CmdSpendMoney(amount);
+            
             res = true;
             reportAboutMoneyIncome();
         }
 
         return res;
+    }
+
+    [Command]
+    void CmdSpendMoney(int amount)
+    {
+        _money -= amount;
     }
 
 }

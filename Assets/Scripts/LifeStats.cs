@@ -115,6 +115,8 @@ public class LifeStats : NetworkBehaviour
     [Server]
     void ReportDamageOwnerAboutHit(Damage dmg)
     {
+        Debug.Log("ReportDamageOwnerAboutHit");
+
         GameObject bulletOwner = ClientScene.FindLocalObject(dmg.ownderNetId);
         if ( bulletOwner!= null)
         {

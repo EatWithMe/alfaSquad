@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public enum ExpAction
 { 
@@ -9,8 +10,9 @@ public enum ExpAction
 }
 
 
-public class UnitExp : MonoBehaviour {
+public class UnitExp : NetworkBehaviour {
 
+    [SyncVar]
     private int _level = 0;
 
     private float expCurrent = 0;
@@ -78,12 +80,14 @@ public class UnitExp : MonoBehaviour {
         return res;
     }
 
+
     public void GainExp(float amount)
     {
         expCurrent += amount;
         CheckForLevelUp();
 
         //report to squad about unitPesonalexp
-        SendMessageUpwards("GainExp",amount);
+        
+        this.transform.parent.gameObject.SendMessage("GainExp", amount);
     }
 }

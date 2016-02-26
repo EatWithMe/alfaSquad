@@ -77,7 +77,7 @@ public class DamageTaker : MonoBehaviour  {
     /// <param name="dmg"></param>
     public void DamageReportCallBack (Damage dmg)
     {
-        
+        SendMessage("GainExp", dmg.amount);
     }
 
 }
