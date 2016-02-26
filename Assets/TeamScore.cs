@@ -232,7 +232,7 @@ public class TeamScore : NetworkBehaviour {
     {
         GUI.Label(new Rect(topLeftX, topLeftY, 15, 23), (elemIndex + 1 ).ToString() + ":");
         GUI.Label(new Rect(topLeftX + 15, topLeftY, 100, 23), playerName );
-        GUI.Label(new Rect(topLeftX + 15 + 100, topLeftY, 45, 23), playerScore.ToString("0.#") );
+        GUI.Label(new Rect(topLeftX + 15 + 100, topLeftY, 45, 23), playerScore.ToString("0") );
     }
 
 

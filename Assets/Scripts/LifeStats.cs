@@ -98,9 +98,7 @@ public class LifeStats : NetworkBehaviour
             healthCurrent -= dmg.amount;
             DeathReport();
             RpcTakeDamage(dmg.amount);
-
-
-            dmg.ownderNetId = this.netId;
+            
             ReportDamageOwnerAboutHit(dmg);
         }
         //else
@@ -115,11 +113,10 @@ public class LifeStats : NetworkBehaviour
     [Server]
     void ReportDamageOwnerAboutHit(Damage dmg)
     {
-        Debug.Log("ReportDamageOwnerAboutHit");
-
         GameObject bulletOwner = ClientScene.FindLocalObject(dmg.ownderNetId);
         if ( bulletOwner!= null)
         {
+            dmg.ownderNetId = this.netId; //we chage dmg ownet to victim id
             bulletOwner.SendMessage("DamageReportCallBack", dmg);
         }
         else
