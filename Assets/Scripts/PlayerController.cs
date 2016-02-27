@@ -338,7 +338,7 @@ public class PlayerController : NetworkBehaviour {
             if (unitList[i] == null)
             {
                 unitList[i] = obj;
-                if (selectedUnit < 0) selectedUnit = i;
+                if (selectedUnit < 0) selectUnit (i);
                 freeSlotIsFound = true;
                 break;
             }
@@ -438,4 +438,17 @@ public class PlayerController : NetworkBehaviour {
             Debug.Log("Cannto switch Weapon - no unit selected");
         }
     }
+
+    public int GetNumberOfUnits()
+    {
+        int unitsTotal = 0;
+
+        foreach (GameObject unit in unitList)
+        {
+            if (unit != null) unitsTotal++;
+        }
+
+        return unitsTotal;
+    }
+
 }

@@ -152,7 +152,6 @@ public class WeaponTemplate : NetworkBehaviour
     {
         shootDelayEndTime = Time.time + shotsDelay;
         CmdCreateBullet();
-        PlaySound(ShootSound);
         IncreaseAccuracy();
     }
 
@@ -173,7 +172,19 @@ public class WeaponTemplate : NetworkBehaviour
         //NetworkServer.SpawnWithClientAuthority(bulletTmp, identity.clientAuthorityOwner);
 
         NetworkServer.Spawn(bulletTmp);
+        RpcCreateBullet();
     }
+
+
+    /// <summary>
+    /// we need to play sound at all clients
+    /// </summary>
+    [ClientRpc]
+    void RpcCreateBullet()
+    {
+        PlaySound(ShootSound); 
+    }
+
 
     Quaternion BulletRandomAccuracy(Quaternion gunDirection)
     {

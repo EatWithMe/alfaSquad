@@ -50,7 +50,7 @@ public class TeamScore : NetworkBehaviour {
                 return 1;
             }
 
-            return (int)(score - other.score);
+            return (int)(other.score - score);
 
         }
 
