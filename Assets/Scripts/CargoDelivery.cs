@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
-public class CargoDelivery : MonoBehaviour {
+public class CargoDelivery : NetworkBehaviour {
 
     public GameObject flarePrefab;
     public GameObject deliveryPrefab;
@@ -16,20 +17,42 @@ public class CargoDelivery : MonoBehaviour {
     private AudioSource audio;
     public AudioClip deliverySound;
 
+    static bool prefubsRegistered = false;
+
     // Use this for initialization
     void Start ()
     {
         audio = GetComponent<AudioSource>();
-        initTimer();
+        if (isServer) initTimer();
         spawnFlare();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        if (isServer)
+        {
+            tryToSpawnDeleavery();
+            tryToPlaySound();
+        }
+        
+    }
 
-        tryToSpawnDeleavery();
-        tryToPlaySound();
+    public override void PreStartClient()
+    {
+        base.PreStartClient();
+        SelfPrefabRegistration();
+    }
+
+    void SelfPrefabRegistration()
+    {
+        if (prefubsRegistered == false)
+        {
+            MyRegistrator.NetworkPrefubRegistration(deliveryPrefab);
+
+            //MyRegistrator.NetworkPrefubRegistration(flarePrefab); flare is not networkobject
+            prefubsRegistered = true;
+        }
     }
 
     void initTimer()
@@ -47,17 +70,21 @@ public class CargoDelivery : MonoBehaviour {
         }
     }
 
+    [Server]
     void tryToSpawnDeleavery()
     {
-            if (Time.time > deleaveryTime)
-            {
-                Vector3 additionalHeight = new Vector3(0, 10, 0);
-                Instantiate(deliveryPrefab, this.transform.position + additionalHeight, this.transform.rotation );
-                Destroy(this.gameObject);
-                //deliverySpawned = true;
-            }
+       if (Time.time > deleaveryTime)
+       {
+            Vector3 additionalHeight = new Vector3(0, 10, 0);
+            GameObject obj = Instantiate(deliveryPrefab, this.transform.position + additionalHeight, this.transform.rotation ) as GameObject;
+             
+            NetworkServer.Spawn(obj);
+            NetworkServer.Destroy(this.gameObject);
+            //deliverySpawned = true;
+        }
     }
 
+    [Server]
     void tryToPlaySound()
     {
         if (!soundAvtivated)
@@ -65,13 +92,19 @@ public class CargoDelivery : MonoBehaviour {
             if (Time.time > deliverySoundActivationTime)
             {
                 //PlaySound;
-                audio.PlayOneShot(deliverySound);
+                RpcPlayDeliverySound();
                 soundAvtivated = true;
             }
         }
     }
 
+    [ClientRpc]
+    void RpcPlayDeliverySound()
+    {
+        audio.PlayOneShot(deliverySound);
+    }
 
+    //flare is not important - so we create it on client
     void spawnFlare()
     {
         Vector3 additionalHeight = new Vector3(0, 2, 0);

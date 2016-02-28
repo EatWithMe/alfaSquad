@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 
 
-public class Pickable : MonoBehaviour {
+public class Pickable : NetworkBehaviour {
 
     public ItemType itemType = ItemType.exp;
     public int itemValue = 0;
@@ -14,6 +15,7 @@ public class Pickable : MonoBehaviour {
     void Start ()
     {
         item = new Item(itemType, itemValue);
+        //if (!isServer) GetComponent<Rigidbody>().detectCollisions = false;
 	}
 	
 	// Update is called once per frame
@@ -27,20 +29,24 @@ public class Pickable : MonoBehaviour {
         item.value = val;
     }
 
-
+    [Server]
     void OnCollisionEnter(Collision other)
     {
-
-        if (other.gameObject.tag == "Unit")
+        if (isServer)
         {
-            //other.gameObject.SendMessage("TakeItem",itemType, itemValue);
-            other.gameObject.SendMessage("TakeItem", item);
-            KillThis();
+            if (other.gameObject.tag == "Unit")
+            {
+                //other.gameObject.SendMessage("TakeItem",itemType, itemValue);
+                other.gameObject.SendMessage("TakeItem", item);
+                KillThis();
+            }
         }
     }
 
+    [Server]
     void KillThis()
     {
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
+        NetworkServer.Destroy(this.gameObject);
     }
 }
